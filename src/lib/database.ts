@@ -309,7 +309,7 @@ export async function getPaymentSummary(): Promise<{
 
   // Count students with pending fees
   const studentsWithPending = await getStudentsWithPendingFees()
-
+   
   return {
     totalCollected,
     totalPending,
