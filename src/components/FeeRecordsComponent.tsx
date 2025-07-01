@@ -114,11 +114,11 @@ export default function FeeRecordsComponent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800'
+        return 'bg-color-primary-100 text-color-primary-800'
       case 'partial':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'bg-color-neutral-100 text-color-neutral-800'
       case 'pending':
-        return 'bg-red-100 text-red-800'
+        return 'bg-color-accent-100 text-color-accent-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
@@ -196,14 +196,14 @@ export default function FeeRecordsComponent() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-700"
+            className="flex items-center gap-2 px-4 py-2 border border-color-neutral-300 rounded-md hover:bg-color-neutral-50 text-color-neutral-700"
           >
             <Filter className="w-4 h-4" />
             Filters
           </button>
           <button
             onClick={exportToCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            className="flex items-center gap-2 px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -222,7 +222,7 @@ export default function FeeRecordsComponent() {
                 value={filters.studentName}
                 onChange={(e) => handleFilterChange('studentName', e.target.value)}
                 placeholder="Search by student name..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               />
             </div>
             <div>
@@ -232,7 +232,7 @@ export default function FeeRecordsComponent() {
                 value={filters.className}
                 onChange={(e) => handleFilterChange('className', e.target.value)}
                 placeholder="Search by class..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               />
             </div>
             <div>
@@ -240,7 +240,7 @@ export default function FeeRecordsComponent() {
               <select
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 bg-white"
               >
                 <option value="">All Statuses</option>
                 <option value="completed">Completed</option>
@@ -253,7 +253,7 @@ export default function FeeRecordsComponent() {
               <select
                 value={filters.method}
                 onChange={(e) => handleFilterChange('method', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 bg-white"
               >
                 <option value="">All Methods</option>
                 <option value="cash">Cash</option>
@@ -269,7 +269,7 @@ export default function FeeRecordsComponent() {
                 type="date"
                 value={filters.startDate}
                 onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               />
             </div>
             <div>
@@ -278,14 +278,14 @@ export default function FeeRecordsComponent() {
                 type="date"
                 value={filters.endDate}
                 onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               />
             </div>
           </div>
           <div className="mt-4 flex justify-end">
             <button
               onClick={clearFilters}
-              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              className="px-4 py-2 text-sm text-color-neutral-600 hover:text-color-neutral-800"
             >
               Clear All Filters
             </button>
@@ -345,7 +345,7 @@ export default function FeeRecordsComponent() {
                             type="date"
                             value={editForm.payment_date || ''}
                             onChange={(e) => setEditForm(prev => ({ ...prev, payment_date: e.target.value }))}
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900"
+                            className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           />
                         ) : (
                           format(new Date(payment.payment_date), 'dd/MM/yyyy')
@@ -364,7 +364,7 @@ export default function FeeRecordsComponent() {
                             step="0.01"
                             value={editForm.amount_received || ''}
                             onChange={(e) => setEditForm(prev => ({ ...prev, amount_received: parseFloat(e.target.value) }))}
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900"
+                            className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           />
                         ) : (
                           `₹${payment.amount_received.toLocaleString()}`
@@ -375,7 +375,7 @@ export default function FeeRecordsComponent() {
                           <select
                             value={editForm.payment_method || ''}
                             onChange={(e) => setEditForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900"
+                            className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           >
                             <option value="cash">Cash</option>
                             <option value="card">Card</option>
@@ -392,7 +392,7 @@ export default function FeeRecordsComponent() {
                           <select
                             value={editForm.payment_status || ''}
                             onChange={(e) => setEditForm(prev => ({ ...prev, payment_status: e.target.value as any }))}
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900"
+                            className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           >
                             <option value="completed">Completed</option>
                             <option value="partial">Partial</option>
@@ -411,7 +411,7 @@ export default function FeeRecordsComponent() {
                             step="0.01"
                             value={editForm.balance_remaining || ''}
                             onChange={(e) => setEditForm(prev => ({ ...prev, balance_remaining: parseFloat(e.target.value) }))}
-                            className="w-full px-2 py-1 border border-gray-300 rounded text-gray-900"
+                            className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           />
                         ) : (
                           `₹${payment.balance_remaining.toLocaleString()}`
@@ -423,14 +423,14 @@ export default function FeeRecordsComponent() {
                             <>
                               <button
                                 onClick={handleSaveEdit}
-                                className="text-green-600 hover:text-green-900"
+                                className="text-color-primary hover:text-color-secondary"
                                 title="Save changes"
                               >
                                 <Save className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={handleCancelEdit}
-                                className="text-red-600 hover:text-red-900"
+                                className="text-color-accent hover:text-pink-700"
                                 title="Cancel edit"
                               >
                                 <X className="w-4 h-4" />
@@ -440,7 +440,7 @@ export default function FeeRecordsComponent() {
                             <>
                               <button
                                 onClick={() => handleEditClick(payment)}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-color-primary hover:text-color-secondary"
                                 title="Edit record"
                               >
                                 <Edit className="w-4 h-4" />
@@ -448,7 +448,7 @@ export default function FeeRecordsComponent() {
                               {payment.has_updates && (
                                 <button
                                   onClick={() => fetchHistory(payment.id)}
-                                  className="text-purple-600 hover:text-purple-900"
+                                  className="text-color-neutral-600 hover:text-color-neutral-900"
                                   title="View history"
                                 >
                                   <History className="w-4 h-4" />
@@ -458,7 +458,7 @@ export default function FeeRecordsComponent() {
                                 href={payment.receipt_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-gray-600 hover:text-gray-900"
+                                className="text-color-neutral-600 hover:text-color-neutral-900"
                                 title="View receipt"
                               >
                                 <Eye className="w-4 h-4" />
@@ -480,14 +480,14 @@ export default function FeeRecordsComponent() {
                   <button
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative inline-flex items-center px-4 py-2 border border-color-neutral-300 text-sm font-medium rounded-md text-color-neutral-700 bg-white hover:bg-color-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-color-neutral-300 text-sm font-medium rounded-md text-color-neutral-700 bg-white hover:bg-color-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
@@ -504,14 +504,14 @@ export default function FeeRecordsComponent() {
                       <button
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-color-neutral-300 bg-white text-sm font-medium text-color-neutral-500 hover:bg-color-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-color-neutral-300 bg-white text-sm font-medium text-color-neutral-500 hover:bg-color-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -533,13 +533,13 @@ export default function FeeRecordsComponent() {
               value={updateReason}
               onChange={(e) => setUpdateReason(e.target.value)}
               placeholder="Please provide a reason for this update..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               rows={3}
             />
             <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={handleCancelEdit}
-                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                className="px-4 py-2 text-color-neutral-700 border border-color-neutral-300 rounded-md hover:bg-color-neutral-50"
               >
                 Cancel
               </button>
@@ -592,7 +592,7 @@ export default function FeeRecordsComponent() {
                       </div>
                       <div>
                         <span className="text-gray-500">New Value:</span>
-                        <div className="text-gray-900 bg-green-50 px-2 py-1 rounded">
+                        <div className="text-color-neutral-900 bg-color-primary-50 px-2 py-1 rounded">
                           {record.new_value || 'N/A'}
                         </div>
                       </div>

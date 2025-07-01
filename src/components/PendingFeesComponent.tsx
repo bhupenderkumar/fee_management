@@ -103,14 +103,14 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
   const totalPendingAmount = filteredStudents.reduce((sum, student) => sum + student.totalPending, 0)
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
+    <div className="min-h-screen bg-color-neutral-50 p-4 lg:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header with Summary */}
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 lg:p-6">
+        <div className="bg-color-accent-50 border border-color-accent-200 rounded-lg p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
+            <AlertCircle className="w-6 h-6 text-color-accent-600 flex-shrink-0" />
             <div>
-              <h3 className="text-lg lg:text-xl font-medium text-red-900">
+              <h3 className="text-lg lg:text-xl font-medium text-color-accent-900">
                 Pending Fees Summary
                 {showMonthFilter && (
                   <span className="block sm:inline text-sm font-normal sm:ml-2 mt-1 sm:mt-0">
@@ -118,7 +118,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                   </span>
                 )}
               </h3>
-              <p className="text-red-700 text-sm lg:text-base">
+              <p className="text-color-accent-700 text-sm lg:text-base">
                 {filteredStudents.length} students have pending fees totaling ₹{totalPendingAmount.toLocaleString()}
               </p>
             </div>
@@ -134,8 +134,8 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                 onClick={() => setShowMonthFilter(!showMonthFilter)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors text-sm ${
                   showMonthFilter
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    ? 'bg-color-primary text-white border-color-primary'
+                    : 'bg-white text-color-neutral-700 border-color-neutral-300 hover:bg-color-neutral-50'
                 }`}
               >
                 <Calendar className="w-4 h-4" />
@@ -147,7 +147,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                   <select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 text-sm"
+                    className="px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 text-sm"
                   >
                     {months.map(month => (
                       <option key={month.value} value={month.value}>
@@ -159,7 +159,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                className="px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
               >
                 {years.map(year => (
                   <option key={year} value={year}>
@@ -176,13 +176,13 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-color-neutral-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search by student name or parent name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full pl-10 pr-4 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
             />
           </div>
         </div>
@@ -192,7 +192,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
             placeholder="Filter by class..."
             value={classFilter}
             onChange={(e) => setClassFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
           />
         </div>
       </div>
@@ -201,7 +201,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-color-primary mx-auto"></div>
             <p className="mt-2 text-gray-500">Loading pending fees...</p>
           </div>
         ) : filteredStudents.length === 0 ? (
@@ -255,7 +255,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                           Mother: {student.mother_name}
                         </div>
                         {student.pendingReason && (
-                          <div className="text-xs text-red-600 mt-1 bg-red-50 px-2 py-1 rounded">
+                          <div className="text-xs text-color-accent-600 mt-1 bg-color-accent-50 px-2 py-1 rounded">
                             {student.pendingReason}
                           </div>
                         )}
@@ -268,7 +268,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                       ₹{student.totalPaid.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-red-600">
+                      <span className="text-sm font-medium text-color-accent-600">
                         ₹{student.totalPending.toLocaleString()}
                       </span>
                     </td>
@@ -298,7 +298,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleQuickPayment(student.id)}
-                          className="text-blue-600 hover:text-blue-900 flex items-center gap-1"
+                          className="text-color-primary hover:text-color-secondary flex items-center gap-1"
                         >
                           <CreditCard className="w-4 h-4" />
                           Collect
@@ -306,7 +306,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                         {(student.father_mobile || student.mother_mobile) && (
                           <button
                             onClick={() => sendWhatsAppReminder(student)}
-                            className="text-green-600 hover:text-green-900 flex items-center gap-1"
+                            className="text-color-primary hover:text-color-secondary flex items-center gap-1"
                           >
                             <Phone className="w-4 h-4" />
                             Remind
@@ -338,13 +338,13 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                   setShowQuickPayment(null)
                   // You could also emit an event or use a callback to switch tabs
                 }}
-                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+                className="flex-1 bg-color-primary text-white py-2 px-4 rounded-md hover:bg-color-secondary"
               >
                 Go to Collection
               </button>
               <button
                 onClick={() => setShowQuickPayment(null)}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                className="flex-1 bg-color-neutral-300 text-color-neutral-700 py-2 px-4 rounded-md hover:bg-color-neutral-400"
               >
                 Cancel
               </button>

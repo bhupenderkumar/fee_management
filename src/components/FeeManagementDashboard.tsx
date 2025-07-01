@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, FileText, Clock, Users, BarChart3, UserCheck } from 'lucide-react'
+import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X } from 'lucide-react'
 import FeeManagementForm from './FeeManagementForm'
 import FeeRecordsComponent from './FeeRecordsComponent'
 import PendingFeesComponent from './PendingFeesComponent'
@@ -12,123 +12,96 @@ type TabType = 'dashboard' | 'attendance' | 'collection' | 'records' | 'pending'
 
 export default function FeeManagementDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const tabs = [
-    {
-      id: 'dashboard' as TabType,
-      name: 'Dashboard',
-      icon: BarChart3,
-      description: 'Overview of attendance and fees'
-    },
-    {
-      id: 'attendance' as TabType,
-      name: 'Attendance',
-      icon: UserCheck,
-      description: 'Mark and manage student attendance'
-    },
-    {
-      id: 'collection' as TabType,
-      name: 'Fee Collection',
-      icon: CreditCard,
-      description: 'Record new fee payments'
-    },
-    {
-      id: 'records' as TabType,
-      name: 'Fee Records',
-      icon: FileText,
-      description: 'View all fee submission records'
-    },
-    {
-      id: 'pending' as TabType,
-      name: 'Pending Fees',
-      icon: Clock,
-      description: 'View students with pending fees'
-    }
+    { id: 'dashboard' as TabType, name: 'Dashboard', icon: BarChart3, description: 'Overview of attendance and fees' },
+    { id: 'attendance' as TabType, name: 'Attendance', icon: UserCheck, description: 'Mark and manage student attendance' },
+    { id: 'collection' as TabType, name: 'Fee Collection', icon: CreditCard, description: 'Record new fee payments' },
+    { id: 'records' as TabType, name: 'Fee Records', icon: FileText, description: 'View all fee submission records' },
+    { id: 'pending' as TabType, name: 'Pending Fees', icon: Clock, description: 'View students with pending fees' },
   ]
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <DashboardAnalytics />
-      case 'attendance':
-        return <AttendanceManagement />
-      case 'collection':
-        return <FeeManagementForm />
-      case 'records':
-        return <FeeRecordsComponent />
-      case 'pending':
-        return <PendingFeesComponent />
-      default:
-        return <DashboardAnalytics />
+      case 'dashboard': return <DashboardAnalytics />
+      case 'attendance': return <AttendanceManagement />
+      case 'collection': return <FeeManagementForm />
+      case 'records': return <FeeRecordsComponent />
+      case 'pending': return <PendingFeesComponent />
+      default: return <DashboardAnalytics />
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 text-white">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-6">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                First Step School
-              </h1>
-              <p className="text-lg text-gray-600">
-                Saurabh Vihar, Jaitpur, Delhi
-              </p>
-              <p className="text-sm text-gray-500">
-                School Management System
-              </p>
+      <header className="fixed top-0 left-0 right-0 z-10 bg-white/10 backdrop-blur-lg border-b border-white/20 shadow-lg">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-3">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-blue-500/80 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-inner">
+                FS
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">
+                  First Step School
+                </h1>
+                <p className="text-xs text-blue-200">
+                  Saurabh Vihar, Jaitpur, Delhi
+                </p>
+              </div>
+            </div>
+            <div className="md:hidden">
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white hover:text-blue-300 transition-colors">
+                {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8" aria-label="Tabs">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              const isActive = activeTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`${
-                    isActive
-                      ? 'border-blue-500 text-blue-600 bg-blue-50'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-200 rounded-t-lg`}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="hidden sm:inline">{tab.name}</span>
-                  <span className="sm:hidden">{tab.name.split(' ')[0]}</span>
-                </button>
-              )
-            })}
-          </nav>
-        </div>
-      </div>
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+        <div className="flex flex-col md:flex-row md:space-x-6">
+          {/* Sidebar Navigation */}
+          <aside className={`md:w-60 mb-6 md:mb-0 transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative inset-y-0 left-0 z-20 md:z-0`}>
+            <nav className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4 pt-20 md:pt-4">
+              <h2 className="text-lg font-semibold mb-4 text-blue-200 px-4">Menu</h2>
+              <ul className="space-y-2">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon
+                  const isActive = activeTab === tab.id
+                  return (
+                    <li key={tab.id}>
+                      <button
+                        onClick={() => { setActiveTab(tab.id); setIsMenuOpen(false); }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 ${isActive ? 'bg-blue-500/80 text-white shadow-lg' : 'text-blue-100 hover:bg-white/10'}`}>
+                        <Icon className="w-5 h-5" />
+                        <span className="font-medium text-sm">{tab.name}</span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
+          </aside>
 
-      {/* Tab Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
-            {/* Tab Description */}
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                {tabs.find(tab => tab.id === activeTab)?.name}
-              </h2>
-              <p className="text-gray-600">
-                {tabs.find(tab => tab.id === activeTab)?.description}
-              </p>
+          {/* Main Content */}
+          <main className="flex-1">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl min-h-[calc(100vh-8rem)]">
+              <div className="p-6 border-b border-white/10">
+                <h2 className="text-2xl font-bold text-white">
+                  {tabs.find(tab => tab.id === activeTab)?.name}
+                </h2>
+                <p className="mt-1 text-sm text-blue-200">
+                  {tabs.find(tab => tab.id === activeTab)?.description}
+                </p>
+              </div>
+              <div className="p-6">
+                {renderTabContent()}
+              </div>
             </div>
-
-            {/* Tab Content */}
-            {renderTabContent()}
-          </div>
+          </main>
         </div>
       </div>
     </div>

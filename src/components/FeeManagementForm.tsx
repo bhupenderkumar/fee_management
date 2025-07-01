@@ -115,9 +115,9 @@ export default function FeeManagementForm() {
               setSelectedClass(e.target.value)
               setValue('student_id', '')
             }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+            className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900"
           >
-            <option value="" className="text-gray-500">Choose a class...</option>
+            <option value="" className="text-color-neutral-500">Choose a class...</option>
             {classes.map((classItem) => (
               <option key={classItem.id} value={classItem.id} className="text-gray-900">
                 {classItem.name} - {classItem.section}
@@ -134,9 +134,9 @@ export default function FeeManagementForm() {
           <select
             {...register('student_id')}
             disabled={!selectedClass}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 bg-white text-gray-900"
+            className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary disabled:bg-color-neutral-100 bg-white text-color-neutral-900"
           >
-            <option value="" className="text-gray-500">Choose a student...</option>
+            <option value="" className="text-color-neutral-500">Choose a student...</option>
             {students.map((student) => (
               <option key={student.id} value={student.id} className="text-gray-900">
                 {student.student_name} - {student.father_name}
@@ -150,8 +150,8 @@ export default function FeeManagementForm() {
 
         {/* Student Details Display */}
         {selectedStudent && (
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="font-medium text-blue-900 mb-2">Student Details</h3>
+          <div className="bg-color-primary-50 p-4 rounded-lg">
+            <h3 className="font-medium text-color-primary-900 mb-2">Student Details</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="font-medium">Student:</span> {selectedStudent.student_name}
@@ -186,7 +186,7 @@ export default function FeeManagementForm() {
               type="number"
               step="0.01"
               {...register('amount_received', { valueAsNumber: true })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900 placeholder-color-neutral-500"
               placeholder="0.00"
             />
             {errors.amount_received && (
@@ -202,7 +202,7 @@ export default function FeeManagementForm() {
             <input
               type="date"
               {...register('payment_date')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900"
             />
             {errors.payment_date && (
               <p className="mt-1 text-sm text-red-600">{errors.payment_date.message}</p>
@@ -216,9 +216,9 @@ export default function FeeManagementForm() {
             </label>
             <select
               {...register('payment_method')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900"
             >
-              <option value="cash" className="text-gray-900">Cash</option>
+              <option value="cash" className="text-color-neutral-900">Cash</option>
               <option value="card" className="text-gray-900">Card</option>
               <option value="upi" className="text-gray-900">UPI</option>
               <option value="bank_transfer" className="text-gray-900">Bank Transfer</option>
@@ -234,7 +234,7 @@ export default function FeeManagementForm() {
               type="number"
               step="0.01"
               {...register('balance_remaining', { valueAsNumber: true })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900 placeholder-color-neutral-500"
               placeholder="0.00"
             />
             {errors.balance_remaining && (
@@ -248,9 +248,9 @@ export default function FeeManagementForm() {
             </label>
             <select
               {...register('payment_status')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900"
             >
-              <option value="completed" className="text-gray-900">Completed</option>
+              <option value="completed" className="text-color-neutral-900">Completed</option>
               <option value="partial" className="text-gray-900">Partial</option>
               <option value="pending" className="text-gray-900">Pending</option>
             </select>
@@ -266,7 +266,7 @@ export default function FeeManagementForm() {
           <textarea
             {...register('notes')}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500"
+            className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary bg-white text-color-neutral-900 placeholder-color-neutral-500"
             placeholder="Any additional notes about the payment..."
           />
         </div>
@@ -275,7 +275,7 @@ export default function FeeManagementForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-color-primary text-white py-3 px-4 rounded-md hover:bg-color-secondary focus:outline-none focus:ring-2 focus:ring-color-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Processing...' : 'Record Payment & Generate Receipt'}
         </button>
@@ -283,8 +283,8 @@ export default function FeeManagementForm() {
 
       {/* Receipt Generated */}
       {receiptUrl && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-green-900 mb-4">
+        <div className="bg-color-primary-50 border border-color-primary-200 rounded-lg p-6">
+          <h3 className="text-lg font-medium text-color-primary-900 mb-4">
             Receipt Generated Successfully!
           </h3>
           <div className="space-y-4">
@@ -297,11 +297,11 @@ export default function FeeManagementForm() {
                   type="text"
                   value={receiptUrl}
                   readOnly
-                  className="flex-1 px-3 py-2 border border-green-300 rounded-md bg-white"
+                  className="flex-1 px-3 py-2 border border-color-primary-300 rounded-md bg-white"
                 />
                 <button
                   onClick={() => navigator.clipboard.writeText(receiptUrl)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  className="px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary"
                 >
                   Copy
                 </button>
@@ -312,14 +312,14 @@ export default function FeeManagementForm() {
                 href={receiptUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="flex items-center gap-2 px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary"
               >
                 <FileText className="w-4 h-4" />
                 View Receipt
               </a>
               <button
                 onClick={shareOnWhatsApp}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                className="flex items-center gap-2 px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary"
               >
                 <Share2 className="w-4 h-4" />
                 Share on WhatsApp

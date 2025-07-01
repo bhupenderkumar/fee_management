@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const messageData = await request.json()
     
     // Validate required fields
-    if (!messageData.student_id || !messageData.attendance_date || !messageData.message_content || !messageData.recipient_number) {
+    if (!messageData.student_id || !messageData.date || !messageData.message_content || !messageData.recipient_number) {
       return NextResponse.json(
         { error: 'Missing required fields: student_id, attendance_date, message_content, recipient_number' },
         { status: 400 }
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const result = await saveAttendanceMessage({
       student_id: messageData.student_id,
-      attendance_date: messageData.attendance_date,
+      date: messageData.date,
       message_content: messageData.message_content,
       recipient_type: messageData.recipient_type,
       recipient_number: messageData.recipient_number,

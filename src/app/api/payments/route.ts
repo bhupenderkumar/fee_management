@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin, supabase } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,8 +18,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate')
 
     // Build the query
-    let query = supabase
-      .schema('school')
+    let query = supabaseAdmin
       .from('fee_payments')
       .select(`
         *,
@@ -119,8 +118,7 @@ export async function POST(request: NextRequest) {
     const receiptId = crypto.randomUUID()
     const receiptUrl = `/receipt/${receiptId}`
 
-    const { data, error } = await supabase
-      .schema('school')
+    const { data, error } = await supabaseAdmin
       .from('fee_payments')
       .insert({
         ...body,
@@ -153,8 +151,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Get the current record to track changes
-    const { data: currentRecord, error: fetchError } = await supabase
-      .schema('school')
+    const { data: currentRecord, error: fetchError } = await supabaseAdmin
       .from('fee_payments')
       .select('*')
       .eq('id', id)
@@ -189,8 +186,7 @@ export async function PUT(request: NextRequest) {
     fieldsToUpdate.has_updates = true
 
     // Update the record
-    const { data: updatedRecord, error: updateError } = await supabase
-      .schema('school')
+    const { data: updatedRecord, error: updateError } = await supabaseAdmin
       .from('fee_payments')
       .update(fieldsToUpdate)
       .eq('id', id)
@@ -216,8 +212,7 @@ export async function PUT(request: NextRequest) {
 
     // Insert history entries if there are changes
     if (historyEntries.length > 0) {
-      const { error: historyError } = await supabase
-        .schema('school')
+      const { error: historyError } = await supabaseAdmin
         .from('fee_history_update')
         .insert(historyEntries)
 

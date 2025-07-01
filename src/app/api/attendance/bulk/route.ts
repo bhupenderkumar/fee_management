@@ -14,28 +14,30 @@ export async function POST(request: NextRequest) {
 
     // Validate each attendance record
     for (const attendance of attendanceList) {
-      if (!attendance.student_id || !attendance.attendance_date || !attendance.status) {
+      if (!attendance.student_id || !attendance.date || !attendance.status) {
         return NextResponse.json(
-          { error: 'Each attendance record must have student_id, attendance_date, and status' },
+          { error: 'Each attendance record must have student_id, date, and status' },
           { status: 400 }
         )
       }
 
-      if (!['present', 'absent'].includes(attendance.status)) {
+      if (!['present', 'absent', 'PRESENT', 'ABSENT'].includes(attendance.status)) {
         return NextResponse.json(
-          { error: 'Status must be either "present" or "absent"' },
+          { error: 'Status must be either "present", "absent", "PRESENT", or "ABSENT"' },
           { status: 400 }
         )
       }
     }
 
-    // Add default values for missing fields
+    // Add default values for missing fields and map to database schema
     const processedAttendanceList = attendanceList.map(attendance => ({
-      student_id: attendance.student_id,
-      attendance_date: attendance.attendance_date,
-      status: attendance.status,
-      marked_by: attendance.marked_by || 'admin',
-      notes: attendance.notes || null
+      studentId: attendance.student_id,  // Map student_id to studentId (database column)
+      date: attendance.date,             // Map date to date (database column)
+      status: attendance.status.toUpperCase(), // Convert to uppercase for database enum
+      createdBy: attendance.marked_by || null, // UUID field, set to null if not provided
+      description: attendance.notes || null,
+      classId: attendance.classId || null,
+      lastModifiedBy: attendance.marked_by || null // UUID field, set to null if not provided
     }))
 
     const result = await bulkMarkAttendance(processedAttendanceList)

@@ -51,13 +51,15 @@ export interface FeeHistoryUpdate {
 
 export interface Attendance {
   id: string
-  student_id: string
-  attendance_date: string
-  status: 'present' | 'absent'
-  marked_by: string
-  notes?: string
-  created_at: string
-  updated_at: string
+  studentId: string  // Changed from student_id to match database schema
+  date: string
+  status: 'PRESENT' | 'ABSENT' | 'LATE' | 'HALF_DAY' // Updated to match database enum values
+  createdBy?: string | null  // UUID field - can be null
+  description?: string  // Changed from notes to match database schema
+  createdAt?: string  // Changed from created_at to match database schema (optional for input)
+  updatedAt?: string  // Changed from updated_at to match database schema (optional for input)
+  classId?: string   // Added to match database schema
+  lastModifiedBy?: string | null  // UUID field - can be null
   // Joined student data
   student?: Student
 }
@@ -65,7 +67,7 @@ export interface Attendance {
 export interface AttendanceMessage {
   id: string
   student_id: string
-  attendance_date: string
+  date: string
   message_content: string
   recipient_type: 'father' | 'mother' | 'both'
   recipient_number: string

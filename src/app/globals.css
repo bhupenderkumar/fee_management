@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: #4F46E5; /* Indigo 600 */
+  --color-secondary: #6366F1; /* Indigo 500 */
+  --color-accent: #EC4899; /* Pink 500 */
+  --color-neutral-100: #F3F4F6; /* Gray 100 */
+  --color-neutral-200: #E5E7EB; /* Gray 200 */
+  --color-neutral-300: #D1D5DB; /* Gray 300 */
+  --color-neutral-400: #9CA3AF; /* Gray 400 */
+  --color-neutral-500: #6B7280; /* Gray 500 */
+  --color-neutral-600: #4B5563; /* Gray 600 */
+  --color-neutral-700: #374151; /* Gray 700 */
+  --color-neutral-800: #1F2937; /* Gray 800 */
+  --color-neutral-900: #111827; /* Gray 900 */
+
+  --background: var(--color-neutral-100);
+  --foreground: var(--color-neutral-900);
 }
 
 @theme inline {
@@ -14,8 +27,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-neutral-900);
+    --foreground: var(--color-neutral-100);
   }
 }
 
@@ -24,3 +37,33 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Select Box Styling */
+select {
+  appearance: none; /* Remove default browser styling */
+  background-color: var(--background);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0.375rem; /* Tailwind's rounded-md */
+  padding: 0.5rem 2.5rem 0.5rem 1rem; /* Adjust padding for custom arrow */
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--foreground);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.5em 1.5em;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Tailwind's focus-ring */
+}
+
+select:disabled {
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+  cursor: not-allowed;
+}
+

@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase, supabaseAdmin } from './supabase'
 import { Student, FeePayment, Attendance, AttendanceMessage } from '@/types/database'
 
 // Get class information with names
@@ -10,14 +10,20 @@ export async function getClassesWithNames(): Promise<{id: string, name: string, 
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
-      .schema('school')
-      .from('Class')
-      .select('id, name, section')
-      .order('name, section')
+    const { data, error } = await supabaseAdmin
+      .from('students')
+      .select('class_name')
+      .order('class_name')
 
     if (error) throw error
-    return data || []
+    
+    // Get unique class names and transform to expected format
+    const uniqueClasses = [...new Set(data?.map(item => item.class_name).filter(Boolean))] || []
+    return uniqueClasses.map(className => ({
+      id: className,
+      name: className,
+      section: '' // No section info in current schema
+    }))
   }
 }
 
@@ -30,7 +36,7 @@ export async function getClasses(): Promise<string[]> {
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
       .from('IDCard')
       .select('class_id')
@@ -52,7 +58,7 @@ export async function getStudentsByClass(className: string): Promise<Student[]> 
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
       .from('IDCard')
       .select('*')
@@ -65,7 +71,7 @@ export async function getStudentsByClass(className: string): Promise<Student[]> 
 }
 
 export async function getStudentById(studentId: string): Promise<Student | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .schema('school')
     .from('IDCard')
     .select('*')
@@ -102,7 +108,7 @@ export async function createFeePayment(payment: Omit<FeePayment, 'id' | 'created
     const fee_month = paymentDate.getMonth() + 1
     const fee_year = paymentDate.getFullYear()
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
       .from('fee_payments')
       .insert({
@@ -143,7 +149,7 @@ export async function updateFeePayment(
 }
 
 export async function getFeePaymentByReceiptUrl(receiptUrl: string): Promise<FeePayment | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .schema('school')
     .from('fee_payments')
     .select(`
@@ -164,7 +170,7 @@ export async function getFeePaymentByReceiptUrl(receiptUrl: string): Promise<Fee
 }
 
 export async function getFeePaymentsByStudent(studentId: string): Promise<FeePayment[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .schema('school')
     .from('fee_payments')
     .select('*')
@@ -176,7 +182,7 @@ export async function getFeePaymentsByStudent(studentId: string): Promise<FeePay
 }
 
 export async function getAllFeePayments(): Promise<FeePayment[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .schema('school')
     .from('fee_payments')
     .select(`
@@ -194,7 +200,7 @@ export async function getStudentsWithPendingFees(): Promise<any[]> {
   const currentYear = new Date().getFullYear()
 
   // Get ALL students from IDCard table
-  const { data: allStudents, error: studentsError } = await supabase
+  const { data: allStudents, error: studentsError } = await supabaseAdmin
     .schema('school')
     .from('IDCard')
     .select(`
@@ -205,7 +211,7 @@ export async function getStudentsWithPendingFees(): Promise<any[]> {
   if (studentsError) throw studentsError
 
   // Get ALL payments
-  const { data: allPayments, error: paymentsError } = await supabase
+  const { data: allPayments, error: paymentsError } = await supabaseAdmin
     .schema('school')
     .from('fee_payments')
     .select('*')
@@ -290,14 +296,14 @@ export async function getPaymentSummary(): Promise<{
   totalStudents: number
   studentsWithPending: number
 }> {
-  const { data: payments, error: paymentsError } = await supabase
+  const { data: payments, error: paymentsError } = await supabaseAdmin
     .schema('school')
     .from('fee_payments')
     .select('amount_received, balance_remaining')
 
   if (paymentsError) throw paymentsError
 
-  const { data: students, error: studentsError } = await supabase
+  const { data: students, error: studentsError } = await supabaseAdmin
     .schema('school')
     .from('IDCard')
     .select('id')
@@ -333,11 +339,11 @@ export async function markAttendance(attendanceData: Omit<Attendance, 'id' | 'cr
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
-      .from('attendance')
+      .from('Attendance')
       .upsert(attendanceData, {
-        onConflict: 'student_id,attendance_date',
+        onConflict: 'studentId,date',
         ignoreDuplicates: false
       })
       .select('*')
@@ -362,11 +368,11 @@ export async function bulkMarkAttendance(attendanceList: Omit<Attendance, 'id' |
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
-      .from('attendance')
+      .from('Attendance')
       .upsert(attendanceList, {
-        onConflict: 'student_id,attendance_date',
+        onConflict: 'studentId,date',
         ignoreDuplicates: false
       })
       .select('*')
@@ -384,15 +390,15 @@ export async function getAttendanceByDate(date: string): Promise<Attendance[]> {
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
-      .from('attendance')
+      .from('Attendance')
       .select(`
         *,
         student:IDCard(*)
       `)
-      .eq('attendance_date', date)
-      .order('created_at', { ascending: false })
+      .eq('date', date)
+      .order('createdAt', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -411,7 +417,7 @@ export async function getStudentsWithAttendanceForDate(date: string, classId?: s
     return response.json()
   } else {
     // Server-side: direct database access
-    let studentsQuery = supabase
+    let studentsQuery = supabaseAdmin
       .schema('school')
       .from('IDCard')
       .select(`
@@ -428,17 +434,17 @@ export async function getStudentsWithAttendanceForDate(date: string, classId?: s
 
     if (studentsError) throw studentsError
 
-    const { data: attendance, error: attendanceError } = await supabase
+    const { data: attendance, error: attendanceError } = await supabaseAdmin
       .schema('school')
-      .from('attendance')
+      .from('Attendance')
       .select('*')
-      .eq('attendance_date', date)
+      .eq('date', date)
 
     if (attendanceError) throw attendanceError
 
     // Merge students with their attendance data
     const studentsWithAttendance = students?.map(student => {
-      const studentAttendance = attendance?.find(att => att.student_id === student.id)
+      const studentAttendance = attendance?.find(att => att.studentId === student.id)
       return {
         ...student,
         attendance: studentAttendance
@@ -466,7 +472,7 @@ export async function getAttendanceStatistics(date: string, classId?: string | n
     return response.json()
   } else {
     // Server-side: direct database access
-    let studentsQuery = supabase
+    let studentsQuery = supabaseAdmin
       .schema('school')
       .from('IDCard')
       .select('id', { count: 'exact' })
@@ -479,26 +485,26 @@ export async function getAttendanceStatistics(date: string, classId?: string | n
 
     if (studentsError) throw studentsError
 
-    let attendanceQuery = supabase
+    let attendanceQuery = supabaseAdmin
       .schema('school')
-      .from('attendance')
-      .select(`
-        status,
-        student:IDCard!inner(class_id)
-      `)
-      .eq('attendance_date', date)
-
-    if (classId && classId !== 'all') {
-      attendanceQuery = attendanceQuery.eq('student.class_id', classId)
-    }
+      .from('Attendance')
+      .select('status, studentId')
+      .eq('date', date)
 
     const { data: attendance, error: attendanceError } = await attendanceQuery
 
     if (attendanceError) throw attendanceError
 
+    // If filtering by class, we need to filter attendance by students in that class
+    let filteredAttendance = attendance || []
+    if (classId && classId !== 'all') {
+      const studentIds = totalStudents?.map(s => s.id) || []
+      filteredAttendance = attendance?.filter(att => studentIds.includes(att.studentId)) || []
+    }
+
     const total = totalStudents?.length || 0
-    const presentCount = attendance?.filter(att => att.status === 'present').length || 0
-    const absentCount = attendance?.filter(att => att.status === 'absent').length || 0
+    const presentCount = filteredAttendance.filter(att => att.status === 'present').length || 0
+    const absentCount = filteredAttendance.filter(att => att.status === 'absent').length || 0
     const attendancePercentage = total > 0 ? (presentCount / total) * 100 : 0
 
     return {
@@ -527,17 +533,17 @@ export async function getAttendanceTrends(days: number = 30): Promise<{
     const startDate = new Date()
     startDate.setDate(endDate.getDate() - days)
 
-    const { data: attendance, error } = await supabase
+    const { data: attendance, error } = await supabaseAdmin
       .schema('school')
-      .from('attendance')
-      .select('attendance_date, status')
-      .gte('attendance_date', startDate.toISOString().split('T')[0])
-      .lte('attendance_date', endDate.toISOString().split('T')[0])
-      .order('attendance_date')
+      .from('Attendance')
+      .select('date, status')
+      .gte('date', startDate.toISOString().split('T')[0])
+      .lte('date', endDate.toISOString().split('T')[0])
+      .order('date')
 
     if (error) throw error
 
-    const { data: totalStudents, error: studentsError } = await supabase
+    const { data: totalStudents, error: studentsError } = await supabaseAdmin
       .schema('school')
       .from('IDCard')
       .select('id', { count: 'exact' })
@@ -548,7 +554,7 @@ export async function getAttendanceTrends(days: number = 30): Promise<{
 
     // Group by date and calculate statistics
     const dateGroups = attendance?.reduce((acc, record) => {
-      const date = record.attendance_date
+      const date = record.date
       if (!acc[date]) {
         acc[date] = { present: 0, absent: 0 }
       }
@@ -584,7 +590,7 @@ export async function saveAttendanceMessage(messageData: Omit<AttendanceMessage,
     return response.json()
   } else {
     // Server-side: direct database access
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .schema('school')
       .from('attendance_messages')
       .insert(messageData)
@@ -605,17 +611,17 @@ export async function getAttendanceMessages(date?: string): Promise<AttendanceMe
     return response.json()
   } else {
     // Server-side: direct database access
-    let query = supabase
+    let query = supabaseAdmin
       .schema('school')
-      .from('attendance_messages')
+      .from('AttendanceMessages')
       .select(`
         *,
         student:IDCard(*)
       `)
-      .order('created_at', { ascending: false })
+      .order('createdAt', { ascending: false })
 
     if (date) {
-      query = query.eq('attendance_date', date)
+      query = query.eq('date', date)
     }
 
     const { data, error } = await query

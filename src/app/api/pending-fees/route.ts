@@ -43,7 +43,6 @@ async function getStudentsWithPendingFeesForMonth(month: number, year: number) {
 
   // Get ALL payments
   const { data: allPayments, error: paymentsError } = await supabase
-    .schema('school')
     .from('fee_payments')
     .select('*')
 

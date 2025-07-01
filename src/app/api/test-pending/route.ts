@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,8 +8,7 @@ export async function GET(request: NextRequest) {
     const year = parseInt(searchParams.get('year') || '2025') // Default to 2025
 
     // Get ALL students
-    const { data: allStudents, error: studentsError } = await supabase
-      .schema('school')
+    const { data: allStudents, error: studentsError } = await supabaseAdmin
       .from('IDCard')
       .select(`
         id,
@@ -27,8 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get ALL payments
-    const { data: allPayments, error: allPaymentsError } = await supabase
-      .schema('school')
+    const { data: allPayments, error: allPaymentsError } = await supabaseAdmin
       .from('fee_payments')
       .select('*')
 

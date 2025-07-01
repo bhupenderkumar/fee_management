@@ -38,8 +38,8 @@ export default function AttendanceManagement() {
   const [classes, setClasses] = useState<ClassInfo[]>([])
   const [selectedClass, setSelectedClass] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const [attendanceFilter, setAttendanceFilter] = useState<'all' | 'present' | 'absent' | 'unmarked'>('all')
-  const [bulkAction, setBulkAction] = useState<'present' | 'absent' | null>(null)
+  const [attendanceFilter, setAttendanceFilter] = useState<'all' | 'PRESENT' | 'ABSENT' | 'unmarked'>('all')
+  const [bulkAction, setBulkAction] = useState<'PRESENT' | 'ABSENT' | null>(null)
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set())
 
   // Load classes on component mount
@@ -121,21 +121,21 @@ export default function AttendanceManagement() {
     setFilteredStudents(filtered)
   }
 
-  const handleAttendanceChange = (studentId: string, status: 'present' | 'absent') => {
+  const handleAttendanceChange = (studentId: string, status: 'PRESENT' | 'ABSENT') => {
     setStudents(prev => prev.map(student => {
       if (student.id === studentId) {
         return {
           ...student,
           attendance: {
             ...student.attendance,
-            student_id: studentId,
-            attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+            studentId: studentId,
+            date: format(selectedDate, 'yyyy-MM-dd'),
             status,
-            marked_by: 'admin',
+            createdBy: 'admin',
             id: student.attendance?.id || '',
-            created_at: student.attendance?.created_at || '',
-            updated_at: student.attendance?.updated_at || ''
-          }
+            createdAt: student.attendance?.createdAt || '',
+            updatedAt: student.attendance?.updatedAt || ''
+          } as Attendance
         }
       }
       return student
@@ -162,21 +162,21 @@ export default function AttendanceManagement() {
     }
   }
 
-  const applyBulkAction = (status: 'present' | 'absent') => {
+  const applyBulkAction = (status: 'PRESENT' | 'ABSENT') => {
     setStudents(prev => prev.map(student => {
       if (selectedStudents.has(student.id)) {
         return {
           ...student,
           attendance: {
             ...student.attendance,
-            student_id: student.id,
-            attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+            studentId: student.id,
+            date: format(selectedDate, 'yyyy-MM-dd'),
             status,
-            marked_by: 'admin',
+            createdBy: 'admin',
             id: student.attendance?.id || '',
-            created_at: student.attendance?.created_at || '',
-            updated_at: student.attendance?.updated_at || ''
-          }
+            createdAt: student.attendance?.createdAt || '',
+            updatedAt: student.attendance?.updatedAt || ''
+          } as Attendance
         }
       }
       return student
@@ -189,14 +189,14 @@ export default function AttendanceManagement() {
       ...student,
       attendance: {
         ...student.attendance,
-        student_id: student.id,
-        attendance_date: format(selectedDate, 'yyyy-MM-dd'),
-        status: 'present' as const,
-        marked_by: 'admin',
+        studentId: student.id,
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        status: 'PRESENT' as const,
+        createdBy: 'admin',
         id: student.attendance?.id || '',
-        created_at: student.attendance?.created_at || '',
-        updated_at: student.attendance?.updated_at || ''
-      }
+        createdAt: student.attendance?.createdAt || '',
+        updatedAt: student.attendance?.updatedAt || ''
+      } as Attendance
     })))
   }
 
@@ -212,8 +212,8 @@ export default function AttendanceManagement() {
     try {
       const attendanceList = students.map(student => ({
         student_id: student.id,
-        attendance_date: format(selectedDate, 'yyyy-MM-dd'),
-        status: student.attendance?.status || 'absent',
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        status: student.attendance?.status || 'ABSENT',
         marked_by: 'admin'
       }))
 
@@ -245,7 +245,7 @@ export default function AttendanceManagement() {
 
     setSendingMessages(true)
     try {
-      const absentStudents = students.filter(student => student.attendance?.status === 'absent')
+      const absentStudents = students.filter(student => student.attendance?.status === 'ABSENT')
       
       if (absentStudents.length === 0) {
         alert('No absent students to send messages to')
@@ -258,7 +258,7 @@ export default function AttendanceManagement() {
         if (student.father_mobile) {
           messages.push({
             student_id: student.id,
-            attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+            date: format(selectedDate, 'yyyy-MM-dd'),
             message_content: messageText,
             recipient_type: 'father',
             recipient_number: student.father_mobile
@@ -269,7 +269,7 @@ export default function AttendanceManagement() {
         if (student.mother_mobile && student.mother_mobile !== student.father_mobile) {
           messages.push({
             student_id: student.id,
-            attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+            date: format(selectedDate, 'yyyy-MM-dd'),
             message_content: messageText,
             recipient_type: 'mother',
             recipient_number: student.mother_mobile
@@ -298,12 +298,12 @@ export default function AttendanceManagement() {
     }
   }
 
-  const presentCount = students.filter(s => s.attendance?.status === 'present').length
-  const absentCount = students.filter(s => s.attendance?.status === 'absent').length
+  const presentCount = students.filter(s => s.attendance?.status === 'PRESENT').length
+  const absentCount = students.filter(s => s.attendance?.status === 'ABSENT').length
   const unmarkedCount = students.filter(s => !s.attendance?.status).length
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
+    <div className="min-h-screen bg-color-neutral-50 p-4 lg:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header with Controls */}
         <div className="bg-white rounded-lg shadow-sm border p-4 lg:p-6">
@@ -321,7 +321,7 @@ export default function AttendanceManagement() {
                     selected={selectedDate}
                     onChange={(date: Date | null) => date && setSelectedDate(date)}
                     dateFormat="yyyy-MM-dd"
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
                     maxDate={new Date()}
                   />
                 </div>
@@ -336,7 +336,7 @@ export default function AttendanceManagement() {
                 <select
                   value={selectedClass}
                   onChange={(e) => setSelectedClass(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
                 >
                   <option value="all">All Classes</option>
                   {classes.map((cls) => (
@@ -357,7 +357,7 @@ export default function AttendanceManagement() {
                     placeholder="Search by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                    className="w-full pl-10 pr-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
                   />
                 </div>
               </div>
@@ -368,11 +368,11 @@ export default function AttendanceManagement() {
                 <select
                   value={attendanceFilter}
                   onChange={(e) => setAttendanceFilter(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
                 >
                   <option value="all">All Students</option>
-                  <option value="present">Present</option>
-                  <option value="absent">Absent</option>
+                  <option value="PRESENT">Present</option>
+                  <option value="ABSENT">Absent</option>
                   <option value="unmarked">Unmarked</option>
                 </select>
               </div>
@@ -383,14 +383,14 @@ export default function AttendanceManagement() {
                 <div className="flex gap-2">
                   <button
                     onClick={markAllPresent}
-                    className="flex-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+                    className="flex-1 px-3 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary transition-colors text-sm"
                     disabled={loading}
                   >
                     <UserCheck className="w-4 h-4 mx-auto" />
                   </button>
                   <button
                     onClick={resetAttendance}
-                    className="flex-1 px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm"
+                    className="flex-1 px-3 py-2 bg-color-neutral-600 text-white rounded-md hover:bg-color-neutral-700 transition-colors text-sm"
                     disabled={loading}
                   >
                     <RotateCcw className="w-4 h-4 mx-auto" />
@@ -406,7 +406,7 @@ export default function AttendanceManagement() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <Users className="w-6 h-6 lg:w-8 lg:h-8 text-blue-500" />
+                <Users className="w-6 h-6 lg:w-8 lg:h-8 text-color-primary" />
                 <div className="ml-3">
                   <p className="text-xs lg:text-sm font-medium text-gray-500">Total Students</p>
                   <p className="text-lg lg:text-2xl font-semibold text-gray-900">{stats.totalStudents}</p>
@@ -416,7 +416,7 @@ export default function AttendanceManagement() {
 
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <CheckCircle className="w-6 h-6 lg:w-8 lg:h-8 text-green-500" />
+                <CheckCircle className="w-6 h-6 lg:w-8 lg:h-8 text-color-primary" />
                 <div className="ml-3">
                   <p className="text-xs lg:text-sm font-medium text-gray-500">Present</p>
                   <p className="text-lg lg:text-2xl font-semibold text-gray-900">{presentCount}</p>
@@ -426,7 +426,7 @@ export default function AttendanceManagement() {
 
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <XCircle className="w-6 h-6 lg:w-8 lg:h-8 text-red-500" />
+                <XCircle className="w-6 h-6 lg:w-8 lg:h-8 text-color-accent" />
                 <div className="ml-3">
                   <p className="text-xs lg:text-sm font-medium text-gray-500">Absent</p>
                   <p className="text-lg lg:text-2xl font-semibold text-gray-900">{absentCount}</p>
@@ -436,7 +436,7 @@ export default function AttendanceManagement() {
 
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-yellow-500" />
+                <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-color-neutral-500" />
                 <div className="ml-3">
                   <p className="text-xs lg:text-sm font-medium text-gray-500">Unmarked</p>
                   <p className="text-lg lg:text-2xl font-semibold text-gray-900">{unmarkedCount}</p>
@@ -464,14 +464,14 @@ export default function AttendanceManagement() {
               {selectedStudents.size > 0 && (
                 <>
                   <button
-                    onClick={() => applyBulkAction('present')}
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+                    onClick={() => applyBulkAction('PRESENT')}
+                    className="px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary transition-colors text-sm"
                   >
                     Mark Selected Present
                   </button>
                   <button
-                    onClick={() => applyBulkAction('absent')}
-                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
+                    onClick={() => applyBulkAction('ABSENT')}
+                    className="px-4 py-2 bg-color-accent text-white rounded-md hover:bg-pink-600 transition-colors text-sm"
                   >
                     Mark Selected Absent
                   </button>
@@ -481,7 +481,7 @@ export default function AttendanceManagement() {
               <button
                 onClick={saveAttendance}
                 disabled={saving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2 text-sm"
+                className="px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary disabled:opacity-50 transition-colors flex items-center gap-2 text-sm"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Saving...' : 'Save Attendance'}
@@ -508,7 +508,7 @@ export default function AttendanceManagement() {
                     type="checkbox"
                     checked={selectedStudents.size === filteredStudents.length && filteredStudents.length > 0}
                     onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-color-neutral-300 text-color-primary focus:ring-color-primary"
                   />
                   <span className="text-sm text-gray-600">Select All</span>
                 </div>
@@ -538,11 +538,11 @@ export default function AttendanceManagement() {
                   <div
                     key={student.id}
                     className={`border rounded-lg p-4 transition-all hover:shadow-md ${
-                      student.attendance?.status === 'present'
-                        ? 'border-green-200 bg-green-50'
-                        : student.attendance?.status === 'absent'
-                        ? 'border-red-200 bg-red-50'
-                        : 'border-gray-200 bg-white hover:bg-gray-50'
+                      student.attendance?.status === 'PRESENT'
+                        ? 'border-color-primary-200 bg-color-primary-50'
+                        : student.attendance?.status === 'ABSENT'
+                        ? 'border-color-accent-200 bg-color-accent-50'
+                        : 'border-color-neutral-200 bg-white hover:bg-color-neutral-50'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -551,7 +551,7 @@ export default function AttendanceManagement() {
                           type="checkbox"
                           checked={selectedStudents.has(student.id)}
                           onChange={(e) => handleStudentSelection(student.id, e.target.checked)}
-                          className="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          className="mt-1 rounded border-color-neutral-300 text-color-primary focus:ring-color-primary"
                         />
                         <div>
                           <h4 className="font-medium text-gray-900 text-sm lg:text-base">{student.student_name}</h4>
@@ -562,33 +562,33 @@ export default function AttendanceManagement() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        {student.attendance?.status === 'present' && (
-                          <CheckCircle className="w-5 h-5 text-green-500" />
+                        {student.attendance?.status === 'PRESENT' && (
+                          <CheckCircle className="w-5 h-5 text-color-primary" />
                         )}
-                        {student.attendance?.status === 'absent' && (
-                          <XCircle className="w-5 h-5 text-red-500" />
+                        {student.attendance?.status === 'ABSENT' && (
+                          <XCircle className="w-5 h-5 text-color-accent" />
                         )}
                       </div>
                     </div>
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleAttendanceChange(student.id, 'present')}
+                        onClick={() => handleAttendanceChange(student.id, 'PRESENT')}
                         className={`flex-1 px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors ${
-                          student.attendance?.status === 'present'
-                            ? 'bg-green-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-green-100 hover:text-green-700'
+                          student.attendance?.status === 'PRESENT'
+                            ? 'bg-color-primary text-white'
+                            : 'bg-color-neutral-100 text-color-neutral-700 hover:bg-color-primary-100 hover:text-color-primary'
                         }`}
                       >
                         <CheckCircle className="w-4 h-4 mx-auto lg:hidden" />
                         <span className="hidden lg:inline">Present</span>
                       </button>
                       <button
-                        onClick={() => handleAttendanceChange(student.id, 'absent')}
+                        onClick={() => handleAttendanceChange(student.id, 'ABSENT')}
                         className={`flex-1 px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors ${
-                          student.attendance?.status === 'absent'
-                            ? 'bg-red-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700'
+                          student.attendance?.status === 'ABSENT'
+                            ? 'bg-color-accent text-white'
+                            : 'bg-color-neutral-100 text-color-neutral-700 hover:bg-color-accent-100 hover:text-color-accent'
                         }`}
                       >
                         <XCircle className="w-4 h-4 mx-auto lg:hidden" />
@@ -596,7 +596,7 @@ export default function AttendanceManagement() {
                       </button>
                     </div>
 
-                    {student.attendance?.status === 'absent' && (
+                    {student.attendance?.status === 'ABSENT' && (
                       <div className="mt-3 pt-3 border-t border-gray-200">
                         <div className="text-xs text-gray-600 space-y-1">
                           <p>📞 Father: {student.father_mobile || 'N/A'}</p>
@@ -615,7 +615,7 @@ export default function AttendanceManagement() {
         {absentCount > 0 && (
           <div className="bg-white rounded-lg shadow-sm border p-4 lg:p-6">
             <div className="flex items-center gap-2 mb-4">
-              <MessageSquare className="w-5 h-5 text-blue-500" />
+              <MessageSquare className="w-5 h-5 text-color-primary" />
               <h3 className="text-lg font-medium text-gray-900">Send Message to Absent Students</h3>
             </div>
 
@@ -629,7 +629,7 @@ export default function AttendanceManagement() {
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
                   placeholder="Enter message to send to parents of absent students..."
                 />
               </div>
@@ -641,7 +641,7 @@ export default function AttendanceManagement() {
                 <button
                   onClick={sendMessagesToAbsentStudents}
                   disabled={sendingMessages || !messageText.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2 text-sm"
+                  className="px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary disabled:opacity-50 transition-colors flex items-center gap-2 text-sm"
                 >
                   <Send className="w-4 h-4" />
                   {sendingMessages ? 'Sending...' : 'Send Messages'}
