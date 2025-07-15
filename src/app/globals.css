@@ -1,69 +1,547 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #4F46E5; /* Indigo 600 */
-  --color-secondary: #6366F1; /* Indigo 500 */
-  --color-accent: #EC4899; /* Pink 500 */
-  --color-neutral-100: #F3F4F6; /* Gray 100 */
-  --color-neutral-200: #E5E7EB; /* Gray 200 */
-  --color-neutral-300: #D1D5DB; /* Gray 300 */
-  --color-neutral-400: #9CA3AF; /* Gray 400 */
-  --color-neutral-500: #6B7280; /* Gray 500 */
-  --color-neutral-600: #4B5563; /* Gray 600 */
-  --color-neutral-700: #374151; /* Gray 700 */
-  --color-neutral-800: #1F2937; /* Gray 800 */
-  --color-neutral-900: #111827; /* Gray 900 */
+  /* Beige Color Scheme - Warm and Natural */
+  --color-primary: #8B7355; /* Dark Beige */
+  --color-primary-50: #FEFCF9; /* Very Light Beige */
+  --color-primary-100: #FDF8F1; /* Light Beige */
+  --color-primary-200: #FAF0E1; /* Light Beige */
+  --color-primary-300: #F7E8D1; /* Medium Light Beige */
+  --color-primary-400: #F4E0C1; /* Medium Beige */
+  --color-primary-500: #F1D8B1; /* Main Beige */
+  --color-primary-600: #E8C794; /* Medium Dark Beige */
+  --color-primary-700: #DFB677; /* Dark Beige */
+  --color-primary-800: #8B7355; /* Very Dark Beige */
+  --color-primary-900: #5D4E37; /* Darkest Brown */
+  --color-secondary: #B49B73; /* Warm Brown */
+  --color-accent: #8B7355; /* Dark Beige */
+  --color-neutral-50: #FEFCF9; /* Very Light Beige */
+  --color-neutral-100: #FDF8F1; /* Light Beige */
+  --color-neutral-200: #FAF0E1; /* Light Beige */
+  --color-neutral-300: #F7E8D1; /* Medium Light Beige */
+  --color-neutral-400: #F4E0C1; /* Medium Beige */
+  --color-neutral-500: #E8C794; /* Medium Dark Beige */
+  --color-neutral-600: #B49B73; /* Dark Beige */
+  --color-neutral-700: #8B7355; /* Darker Beige */
+  --color-neutral-800: #6F5C44; /* Very Dark Beige */
+  --color-neutral-900: #5D4E37; /* Darkest Brown */
 
-  --background: var(--color-neutral-100);
-  --foreground: var(--color-neutral-900);
+  --background: #FEFCF9; /* Very Light Beige Background */
+  --foreground: #5D4E37; /* Dark Brown Text */
+  --text-color: #5D4E37; /* Dark Brown Text */
+  --label-color: #8B7355; /* Dark Beige Labels */
+  --input-bg: #FFFFFF; /* White Input Background */
+  --input-border: #F7E8D1; /* Light Beige Border */
+  --input-text: #5D4E37; /* Dark Brown Input Text */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-neutral-900);
-    --foreground: var(--color-neutral-100);
-  }
-}
+/* Removed dark mode - keeping consistent white/black theme */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
-/* Select Box Styling */
-select {
-  appearance: none; /* Remove default browser styling */
-  background-color: var(--background);
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 0.375rem; /* Tailwind's rounded-md */
-  padding: 0.5rem 2.5rem 0.5rem 1rem; /* Adjust padding for custom arrow */
-  font-size: 1rem;
+/* Apple system font class */
+.font-system {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+/* Input Field Styling */
+input, textarea, select {
+  appearance: none;
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   line-height: 1.5rem;
-  color: var(--foreground);
+  color: var(--input-text) !important;
+  font-weight: 400;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Select specific styling */
+select {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23404040' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
-  background-size: 1.5em 1.5em;
+  background-size: 1.25em 1.25em;
 }
 
-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Tailwind's focus-ring */
+/* Focus states */
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
+  transform: none;
 }
 
-select:disabled {
-  background-color: var(--color-neutral-200);
-  color: var(--color-neutral-500);
+/* Disabled states */
+input:disabled, textarea:disabled, select:disabled {
+  background-color: var(--color-neutral-100) !important;
+  color: var(--color-neutral-500) !important;
+  border-color: var(--color-neutral-200) !important;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
+/* Placeholder styling */
+input::placeholder, textarea::placeholder {
+  color: var(--color-neutral-500) !important;
+  opacity: 1;
+}
+
+/* Label styling */
+label {
+  color: var(--label-color) !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Enhanced Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-color) !important;
+  margin-bottom: 0.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2rem; font-weight: 700; }
+h2 { font-size: 1.75rem; font-weight: 600; }
+h3 { font-size: 1.5rem; font-weight: 600; }
+h4 { font-size: 1.25rem; font-weight: 500; }
+h5 { font-size: 1.125rem; font-weight: 500; }
+h6 { font-size: 1rem; font-weight: 500; }
+
+/* Text color fixes */
+p, span, div, td, th {
+  color: var(--text-color) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Specific text color overrides */
+.text-gray-900, .text-color-neutral-900 {
+  color: var(--text-color) !important;
+}
+
+.text-gray-700, .text-color-neutral-700 {
+  color: var(--label-color) !important;
+}
+
+.text-gray-500, .text-color-neutral-500 {
+  color: var(--color-neutral-500) !important;
+}
+
+/* Button enhancements */
+button {
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+button:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Input field enhancements - removed blue focus */
+input, textarea {
+  transition: all 0.15s ease-in-out;
+}
+
+input:focus, textarea:focus {
+  transform: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Card shadows */
+/* Card and Container Styling */
+.card-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-shadow:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Modern Card Design */
+.modern-card {
+  background: #ffffff;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.modern-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  border-color: var(--color-neutral-300);
+}
+
+/* Solid Backgrounds - No Gradients */
+.gradient-primary {
+  background: var(--color-primary);
+}
+
+.gradient-accent {
+  background: var(--color-primary);
+}
+
+.gradient-neutral {
+  background: var(--color-neutral-100);
+}
+
+/* Modern Button Styling */
+.btn-primary {
+  background: var(--color-primary);
+  color: white !important;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-800);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-primary);
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Table Styling */
+.modern-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.modern-table th {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700) !important;
+  font-weight: 500;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-200);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.modern-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+  background: white;
+  transition: background-color 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.modern-table tr:hover td {
+  background: var(--color-neutral-50);
+}
+
+/* Loading Animations */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Status Badges - Monochromatic */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.status-completed {
+  background: var(--color-neutral-900);
+  color: white;
+  border: 1px solid var(--color-neutral-900);
+}
+
+.status-pending {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-700);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.status-partial {
+  background: var(--color-neutral-600);
+  color: white;
+  border: 1px solid var(--color-neutral-600);
+}
+
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--label-color) !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+}
+
+/* Error States - Monochromatic */
+.input-error {
+  border-color: var(--color-neutral-900) !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.error-message {
+  color: var(--color-neutral-900) !important;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Navigation and Header Styling */
+.nav-item {
+  transition: all 0.15s ease;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.nav-item:hover {
+  background: var(--color-neutral-100);
+  color: var(--color-primary) !important;
+}
+
+.nav-item.active {
+  background: var(--color-primary);
+  color: white !important;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-neutral-200);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-primary);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Birthday Specific Styles */
+.birthday-card {
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #f3e8ff 100%);
+  border: 2px solid #f9a8d4;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.birthday-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(249, 168, 212, 0.3);
+  border-color: #ec4899;
+}
+
+.birthday-today {
+  animation: birthday-pulse 2s infinite;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+@keyframes birthday-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+  }
+}
+
+.birthday-badge {
+  background: linear-gradient(45deg, #ef4444, #f97316);
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  animation: birthday-bounce 1s infinite alternate;
+}
+
+@keyframes birthday-bounce {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-2px); }
+}
+
+/* Birthday Pamphlet Print Styles */
+@media print {
+  .birthday-pamphlet {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  .birthday-pamphlet .gradient-bg {
+    background: #f8f9fa !important;
+    border: 2px solid #dee2e6 !important;
+  }
+
+  .birthday-pamphlet .photo-frame {
+    border: 2px solid #6c757d !important;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modern-card {
+    margin: 0.5rem;
+    border-radius: 0.75rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .modern-table {
+    font-size: 0.875rem;
+  }
+
+  .modern-table th,
+  .modern-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-100);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
+}
+
+.bg-color {
+  background-color: var(--color-neutral-500) !important;
+}
+
+/* Override Tailwind's bg-black to use a beige color instead */
+.bg-black {
+  background-color: #ff920c !important; /* Dark beige/brown color */
+}
+
+/* You can also override other black-related classes */
+.text-black {
+  color: #1a140b !important; /* Dark brown text */
+}
+
+.border-black {
+  border-color: #797774 !important; /* Dark beige border */
+}

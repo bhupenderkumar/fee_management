@@ -19,10 +19,11 @@ export async function GET(request: NextRequest) {
 
     // Build the query
     let query = supabaseAdmin
+      .schema('school')
       .from('fee_payments')
       .select(`
         *,
-        student:IDCard(
+        student:IDCard!inner(
           *,
           class:Class(name, section)
         )
@@ -119,6 +120,7 @@ export async function POST(request: NextRequest) {
     const receiptUrl = `/receipt/${receiptId}`
 
     const { data, error } = await supabaseAdmin
+      .schema('school')
       .from('fee_payments')
       .insert({
         ...body,
@@ -152,6 +154,7 @@ export async function PUT(request: NextRequest) {
 
     // Get the current record to track changes
     const { data: currentRecord, error: fetchError } = await supabaseAdmin
+      .schema('school')
       .from('fee_payments')
       .select('*')
       .eq('id', id)
@@ -187,6 +190,7 @@ export async function PUT(request: NextRequest) {
 
     // Update the record
     const { data: updatedRecord, error: updateError } = await supabaseAdmin
+      .schema('school')
       .from('fee_payments')
       .update(fieldsToUpdate)
       .eq('id', id)
@@ -213,6 +217,7 @@ export async function PUT(request: NextRequest) {
     // Insert history entries if there are changes
     if (historyEntries.length > 0) {
       const { error: historyError } = await supabaseAdmin
+        .schema('school')
         .from('fee_history_update')
         .insert(historyEntries)
 
@@ -227,6 +232,94 @@ export async function PUT(request: NextRequest) {
     console.error('Error updating payment:', error)
     return NextResponse.json(
       { error: 'Failed to update payment' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    const deleted_by = searchParams.get('deleted_by') || 'admin'
+    const delete_reason = searchParams.get('delete_reason')
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Payment ID is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!delete_reason) {
+      return NextResponse.json(
+        { error: 'Delete reason is required' },
+        { status: 400 }
+      )
+    }
+
+    // Get the current record before deletion for history tracking
+    const { data: currentRecord, error: fetchError } = await supabaseAdmin
+      .schema('school')
+      .from('fee_payments')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !currentRecord) {
+      return NextResponse.json(
+        { error: 'Payment record not found' },
+        { status: 404 }
+      )
+    }
+
+    // Try to create a deletion history entry before deleting the record
+    // If this fails, we'll continue with the deletion but log the error
+    try {
+      const { error: historyError } = await supabaseAdmin
+        .schema('school')
+        .from('fee_history_update')
+        .insert({
+          fee_payment_id: id,
+          field_name: 'record_status',
+          old_value: 'active',
+          new_value: 'deleted',
+          updated_by: deleted_by,
+          update_reason: delete_reason
+        })
+
+      if (historyError) {
+        console.error('Warning: Could not create deletion history:', historyError)
+        // Continue with deletion even if history tracking fails
+      }
+    } catch (historyException) {
+      console.error('Warning: History tracking failed:', historyException)
+      // Continue with deletion even if history tracking fails
+    }
+
+    // Delete the payment record
+    const { error: deleteError } = await supabaseAdmin
+      .schema('school')
+      .from('fee_payments')
+      .delete()
+      .eq('id', id)
+
+    if (deleteError) {
+      console.error('Error deleting payment:', deleteError)
+      return NextResponse.json(
+        { error: 'Failed to delete payment record' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      message: 'Payment record deleted successfully',
+      deleted_record: currentRecord
+    })
+  } catch (error) {
+    console.error('Error deleting payment:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete payment' },
       { status: 500 }
     )
   }

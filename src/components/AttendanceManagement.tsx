@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { Calendar, Users, MessageSquare, CheckCircle, XCircle, Save, Send, Filter, Search, RotateCcw, UserCheck, UserX } from 'lucide-react'
 import DatePicker from 'react-datepicker'
 import { Student, Attendance } from '@/types/database'
+import { EnhancedImage } from './ChildDetailsComponent'
 import "react-datepicker/dist/react-datepicker.css"
 
 interface StudentWithAttendance extends Student {
@@ -303,14 +304,14 @@ export default function AttendanceManagement() {
   const unmarkedCount = students.filter(s => !s.attendance?.status).length
 
   return (
-    <div className="min-h-screen bg-color-neutral-50 p-4 lg:p-6">
+    <div className="min-h-screen bg-white p-4 lg:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header with Controls */}
         <div className="bg-white rounded-lg shadow-sm border p-4 lg:p-6">
           <div className="flex flex-col space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-2">Attendance Management</h2>
+                <h2 className="text-xl lg:text-2xl font-semibold text-black mb-2">Attendance Management</h2>
                 <p className="text-gray-600">Mark attendance for students</p>
               </div>
 
@@ -321,7 +322,7 @@ export default function AttendanceManagement() {
                     selected={selectedDate}
                     onChange={(date: Date | null) => date && setSelectedDate(date)}
                     dateFormat="yyyy-MM-dd"
-                    className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                     maxDate={new Date()}
                   />
                 </div>
@@ -332,11 +333,11 @@ export default function AttendanceManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Class Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                <label className="block text-sm font-medium text-black mb-1">Class</label>
                 <select
                   value={selectedClass}
                   onChange={(e) => setSelectedClass(e.target.value)}
-                  className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                 >
                   <option value="all">All Classes</option>
                   {classes.map((cls) => (
@@ -349,7 +350,7 @@ export default function AttendanceManagement() {
 
               {/* Search */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Search Students</label>
+                <label className="block text-sm font-medium text-black mb-1">Search Students</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
@@ -357,18 +358,18 @@ export default function AttendanceManagement() {
                     placeholder="Search by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                   />
                 </div>
               </div>
 
               {/* Attendance Filter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+                <label className="block text-sm font-medium text-black mb-1">Filter by Status</label>
                 <select
                   value={attendanceFilter}
                   onChange={(e) => setAttendanceFilter(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                 >
                   <option value="all">All Students</option>
                   <option value="PRESENT">Present</option>
@@ -379,18 +380,18 @@ export default function AttendanceManagement() {
 
               {/* Quick Actions */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Quick Actions</label>
+                <label className="block text-sm font-medium text-black mb-1">Quick Actions</label>
                 <div className="flex gap-2">
                   <button
                     onClick={markAllPresent}
-                    className="flex-1 px-3 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary transition-colors text-sm"
+                    className="flex-1 px-3 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors text-sm"
                     disabled={loading}
                   >
                     <UserCheck className="w-4 h-4 mx-auto" />
                   </button>
                   <button
                     onClick={resetAttendance}
-                    className="flex-1 px-3 py-2 bg-color-neutral-600 text-white rounded-md hover:bg-color-neutral-700 transition-colors text-sm"
+                    className="flex-1 px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-sm"
                     disabled={loading}
                   >
                     <RotateCcw className="w-4 h-4 mx-auto" />
@@ -406,17 +407,17 @@ export default function AttendanceManagement() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <Users className="w-6 h-6 lg:w-8 lg:h-8 text-color-primary" />
+                <Users className="w-6 h-6 lg:w-8 lg:h-8 text-black" />
                 <div className="ml-3">
-                  <p className="text-xs lg:text-sm font-medium text-gray-500">Total Students</p>
-                  <p className="text-lg lg:text-2xl font-semibold text-gray-900">{stats.totalStudents}</p>
+                  <p className="text-xs lg:text-sm font-medium text-gray-600">Total Students</p>
+                  <p className="text-lg lg:text-2xl font-semibold text-black">{stats.totalStudents}</p>
                 </div>
               </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border p-4">
               <div className="flex items-center">
-                <CheckCircle className="w-6 h-6 lg:w-8 lg:h-8 text-color-primary" />
+                <CheckCircle className="w-6 h-6 lg:w-8 lg:h-8 text-black" />
                 <div className="ml-3">
                   <p className="text-xs lg:text-sm font-medium text-gray-500">Present</p>
                   <p className="text-lg lg:text-2xl font-semibold text-gray-900">{presentCount}</p>
@@ -553,6 +554,20 @@ export default function AttendanceManagement() {
                           onChange={(e) => handleStudentSelection(student.id, e.target.checked)}
                           className="mt-1 rounded border-color-neutral-300 text-color-primary focus:ring-color-primary"
                         />
+                        <div className="flex-shrink-0 w-10 h-10">
+                          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-300">
+                            <EnhancedImage
+                              src={student.student_photo_url}
+                              alt={student.student_name}
+                              className="w-full h-full object-cover"
+                              fallbackIcon={
+                                <div className="w-full h-full bg-amber-200 flex items-center justify-center">
+                                  <Users className="w-5 h-5 text-amber-600" />
+                                </div>
+                              }
+                            />
+                          </div>
+                        </div>
                         <div>
                           <h4 className="font-medium text-gray-900 text-sm lg:text-base">{student.student_name}</h4>
                           <p className="text-xs lg:text-sm text-gray-600">

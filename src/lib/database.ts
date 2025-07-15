@@ -1,39 +1,59 @@
 import { supabase, supabaseAdmin } from './supabase'
 import { Student, FeePayment, Attendance, AttendanceMessage } from '@/types/database'
+import { cacheUtils, CACHE_KEYS, CACHE_EXPIRY } from './cache'
 
 // Get class information with names
 export async function getClassesWithNames(): Promise<{id: string, name: string, section: string}[]> {
   if (typeof window !== 'undefined') {
-    // Client-side: use API route
+    // Client-side: Check cache first
+    const cachedClasses = cacheUtils.getClassesWithNames()
+    if (cachedClasses) {
+      console.log('📦 Using cached classes with names')
+      return cachedClasses
+    }
+
+    // Cache miss: fetch from API
+    console.log('🌐 Fetching classes with names from API')
     const response = await fetch('/api/classes-with-names')
     if (!response.ok) throw new Error('Failed to fetch classes')
-    return response.json()
+    const classes = await response.json()
+
+    // Cache the result
+    cacheUtils.setClassesWithNames(classes)
+    return classes
   } else {
     // Server-side: direct database access
     const { data, error } = await supabaseAdmin
-      .from('students')
-      .select('class_name')
-      .order('class_name')
+      .schema('school')
+      .from('Class')
+      .select('id, name, section')
+      .order('name, section')
 
     if (error) throw error
-    
-    // Get unique class names and transform to expected format
-    const uniqueClasses = [...new Set(data?.map(item => item.class_name).filter(Boolean))] || []
-    return uniqueClasses.map(className => ({
-      id: className,
-      name: className,
-      section: '' // No section info in current schema
-    }))
+
+    return data || []
   }
 }
 
 // Client-side functions that use API routes
 export async function getClasses(): Promise<string[]> {
   if (typeof window !== 'undefined') {
-    // Client-side: use API route
+    // Client-side: Check cache first
+    const cachedClasses = cacheUtils.getClasses()
+    if (cachedClasses) {
+      console.log('📦 Using cached classes')
+      return cachedClasses
+    }
+
+    // Cache miss: fetch from API
+    console.log('🌐 Fetching classes from API')
     const response = await fetch('/api/classes')
     if (!response.ok) throw new Error('Failed to fetch classes')
-    return response.json()
+    const classes = await response.json()
+
+    // Cache the result
+    cacheUtils.setClasses(classes)
+    return classes
   } else {
     // Server-side: direct database access
     const { data, error } = await supabaseAdmin
@@ -52,10 +72,22 @@ export async function getClasses(): Promise<string[]> {
 
 export async function getStudentsByClass(className: string): Promise<Student[]> {
   if (typeof window !== 'undefined') {
-    // Client-side: use API route
+    // Client-side: Check cache first
+    const cachedStudents = cacheUtils.getStudentsByClass(className)
+    if (cachedStudents) {
+      console.log(`📦 Using cached students for class: ${className}`)
+      return cachedStudents
+    }
+
+    // Cache miss: fetch from API
+    console.log(`🌐 Fetching students for class: ${className}`)
     const response = await fetch(`/api/students?class=${encodeURIComponent(className)}`)
     if (!response.ok) throw new Error('Failed to fetch students')
-    return response.json()
+    const students = await response.json()
+
+    // Cache the result
+    cacheUtils.setStudentsByClass(className, students)
+    return students
   } else {
     // Server-side: direct database access
     const { data, error } = await supabaseAdmin
@@ -145,6 +177,36 @@ export async function updateFeePayment(
   })
 
   if (!response.ok) throw new Error('Failed to update payment')
+
+  // Clear related cache after successful update
+  cacheUtils.clearStudentCache()
+
+  return response.json()
+}
+
+export async function deleteFeePayment(
+  id: string,
+  deletedBy: string = 'admin',
+  deleteReason: string
+): Promise<{ message: string; deleted_record: FeePayment }> {
+  const params = new URLSearchParams({
+    id,
+    deleted_by: deletedBy,
+    delete_reason: deleteReason
+  })
+
+  const response = await fetch(`/api/payments?${params.toString()}`, {
+    method: 'DELETE',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to delete payment')
+  }
+
+  // Clear related cache after successful deletion
+  cacheUtils.clearStudentCache()
+
   return response.json()
 }
 
@@ -629,4 +691,124 @@ export async function getAttendanceMessages(date?: string): Promise<AttendanceMe
     if (error) throw error
     return data || []
   }
+}
+
+// Student Management Functions
+export interface StudentManagementParams {
+  page?: number
+  limit?: number
+  search?: string
+  class?: string
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+}
+
+export interface StudentFormData {
+  id?: string
+  student_name: string
+  father_name: string
+  mother_name?: string
+  class_id: string
+  section?: string
+
+  date_of_birth?: string
+  gender?: string
+  address?: string
+  father_mobile?: string
+  mother_mobile?: string
+  email?: string
+  blood_group?: string
+  emergency_contact?: string
+  previous_school?: string
+  admission_date?: string
+  fees_amount?: number
+  transport_required?: boolean
+  medical_conditions?: string
+}
+
+export async function getAllStudents(params: StudentManagementParams = {}) {
+  const searchParams = new URLSearchParams()
+
+  if (params.page) searchParams.set('page', params.page.toString())
+  if (params.limit) searchParams.set('limit', params.limit.toString())
+  if (params.search) searchParams.set('search', params.search)
+  if (params.class) searchParams.set('class', params.class)
+  if (params.sortBy) searchParams.set('sortBy', params.sortBy)
+  if (params.sortOrder) searchParams.set('sortOrder', params.sortOrder)
+
+  const response = await fetch(`/api/students-management?${searchParams.toString()}`)
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to fetch students')
+  }
+  return response.json()
+}
+
+export async function createStudent(studentData: StudentFormData) {
+  const response = await fetch('/api/students-management', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(studentData),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to create student')
+  }
+
+  // Clear student cache after successful creation
+  cacheUtils.clearStudentCache()
+
+  return response.json()
+}
+
+export async function updateStudent(studentData: StudentFormData, updateReason?: string) {
+  const response = await fetch('/api/students-management', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...studentData,
+      update_reason: updateReason
+    }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to update student')
+  }
+
+  // Clear student cache after successful update
+  cacheUtils.clearStudentCache()
+
+  return response.json()
+}
+
+export async function deleteStudent(
+  id: string,
+  deletedBy: string = 'admin',
+  deleteReason: string
+) {
+  const params = new URLSearchParams({
+    id,
+    deleted_by: deletedBy,
+    delete_reason: deleteReason
+  })
+
+  const response = await fetch(`/api/students-management?${params.toString()}`, {
+    method: 'DELETE',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'Failed to delete student')
+  }
+
+  // Clear student cache after successful deletion
+  cacheUtils.clearStudentCache()
+
+  return response.json()
 }

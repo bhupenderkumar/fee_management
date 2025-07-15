@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { AlertCircle, CreditCard, Search, Filter, Phone, Calendar } from 'lucide-react'
 import { FeePayment, Student } from '@/types/database'
+import { shareOnWhatsApp, generateReminderMessage, formatPhoneNumber, isValidWhatsAppNumber } from '@/utils/whatsapp'
+import { EnhancedImage } from './ChildDetailsComponent'
 
 interface PendingFeeStudent extends Student {
   totalPaid: number
@@ -80,37 +82,37 @@ export default function PendingFeesComponent() {
     setShowQuickPayment(studentId)
   }
 
-  const sendWhatsAppReminder = (student: PendingFeeStudent) => {
-    const message = `Dear Parent,
+  const sendWhatsAppReminder = (student: PendingFeeStudent, phoneNumber: string, parentType: 'father' | 'mother') => {
+    if (isValidWhatsAppNumber(phoneNumber)) {
+      const message = generateReminderMessage({
+        studentName: student.student_name,
+        className: student.class?.name,
+        classSection: student.class?.section,
+        pendingAmount: student.totalPending,
+        lastPaymentAmount: student.lastPaymentAmount,
+        lastPaymentDate: student.lastPaymentDate ? format(new Date(student.lastPaymentDate), 'dd/MM/yyyy') : undefined
+      })
 
-This is a gentle reminder that the fee payment for ${student.student_name} (Class: ${student.class?.name} ${student.class?.section}) is pending.
-
-Outstanding Amount: ₹${student.totalPending.toLocaleString()}
-${student.lastPaymentDate ? `Last Payment: ₹${student.lastPaymentAmount?.toLocaleString()} on ${format(new Date(student.lastPaymentDate), 'dd/MM/yyyy')}` : 'No previous payments found'}
-
-Please make the payment at your earliest convenience.
-
-Thank you,
-${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
-
-    const phoneNumber = student.father_mobile || student.mother_mobile
-    if (phoneNumber) {
-      const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`
-      window.open(whatsappUrl, '_blank')
+      shareOnWhatsApp({
+        phoneNumber,
+        message
+      })
+    } else {
+      alert('Invalid phone number for WhatsApp sharing')
     }
   }
 
   const totalPendingAmount = filteredStudents.reduce((sum, student) => sum + student.totalPending, 0)
 
   return (
-    <div className="min-h-screen bg-color-neutral-50 p-4 lg:p-6">
+    <div className="min-h-screen bg-white p-4 lg:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header with Summary */}
-        <div className="bg-color-accent-50 border border-color-accent-200 rounded-lg p-4 lg:p-6">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 lg:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <AlertCircle className="w-6 h-6 text-color-accent-600 flex-shrink-0" />
+            <AlertCircle className="w-6 h-6 text-black flex-shrink-0" />
             <div>
-              <h3 className="text-lg lg:text-xl font-medium text-color-accent-900">
+              <h3 className="text-lg lg:text-xl font-medium text-black">
                 Pending Fees Summary
                 {showMonthFilter && (
                   <span className="block sm:inline text-sm font-normal sm:ml-2 mt-1 sm:mt-0">
@@ -118,7 +120,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                   </span>
                 )}
               </h3>
-              <p className="text-color-accent-700 text-sm lg:text-base">
+              <p className="text-gray-700 text-sm lg:text-base">
                 {filteredStudents.length} students have pending fees totaling ₹{totalPendingAmount.toLocaleString()}
               </p>
             </div>
@@ -134,8 +136,8 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                 onClick={() => setShowMonthFilter(!showMonthFilter)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md border transition-colors text-sm ${
                   showMonthFilter
-                    ? 'bg-color-primary text-white border-color-primary'
-                    : 'bg-white text-color-neutral-700 border-color-neutral-300 hover:bg-color-neutral-50'
+                    ? 'bg-black text-white border-black'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 <Calendar className="w-4 h-4" />
@@ -147,7 +149,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                   <select
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-                    className="px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 text-sm"
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black text-sm"
                   >
                     {months.map(month => (
                       <option key={month.value} value={month.value}>
@@ -159,7 +161,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
               >
                 {years.map(year => (
                   <option key={year} value={year}>
@@ -176,13 +178,13 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-color-neutral-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
               placeholder="Search by student name or parent name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
             />
           </div>
         </div>
@@ -192,7 +194,7 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
             placeholder="Filter by class..."
             value={classFilter}
             onChange={(e) => setClassFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
           />
         </div>
       </div>
@@ -246,19 +248,35 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                 {filteredStudents.map((student) => (
                   <tr key={student.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{student.student_name}</div>
-                        <div className="text-sm text-gray-500">
-                          Father: {student.father_name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Mother: {student.mother_name}
-                        </div>
-                        {student.pendingReason && (
-                          <div className="text-xs text-color-accent-600 mt-1 bg-color-accent-50 px-2 py-1 rounded">
-                            {student.pendingReason}
+                      <div className="flex items-center gap-3">
+                        <div className="flex-shrink-0 w-12 h-12">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-amber-300">
+                            <EnhancedImage
+                              src={student.student_photo_url}
+                              alt={student.student_name}
+                              className="w-full h-full object-cover"
+                              fallbackIcon={
+                                <div className="w-full h-full bg-amber-200 flex items-center justify-center">
+                                  <AlertCircle className="w-6 h-6 text-amber-600" />
+                                </div>
+                              }
+                            />
                           </div>
-                        )}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{student.student_name}</div>
+                          <div className="text-sm text-gray-500">
+                            Father: {student.father_name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            Mother: {student.mother_name}
+                          </div>
+                          {student.pendingReason && (
+                            <div className="text-xs text-color-accent-600 mt-1 bg-color-accent-50 px-2 py-1 rounded">
+                              {student.pendingReason}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -287,31 +305,44 @@ ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div>
                         {student.father_mobile && (
-                          <div className="text-xs">F: {student.father_mobile}</div>
+                          <div className="text-xs">F: {formatPhoneNumber(student.father_mobile)}</div>
                         )}
                         {student.mother_mobile && (
-                          <div className="text-xs">M: {student.mother_mobile}</div>
+                          <div className="text-xs">M: {formatPhoneNumber(student.mother_mobile)}</div>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-1">
                         <button
                           onClick={() => handleQuickPayment(student.id)}
-                          className="text-color-primary hover:text-color-secondary flex items-center gap-1"
+                          className="text-black hover:text-gray-600 flex items-center gap-1 text-xs"
                         >
-                          <CreditCard className="w-4 h-4" />
+                          <CreditCard className="w-3 h-3" />
                           Collect
                         </button>
-                        {(student.father_mobile || student.mother_mobile) && (
-                          <button
-                            onClick={() => sendWhatsAppReminder(student)}
-                            className="text-color-primary hover:text-color-secondary flex items-center gap-1"
-                          >
-                            <Phone className="w-4 h-4" />
-                            Remind
-                          </button>
-                        )}
+
+                        {/* WhatsApp Reminder Buttons */}
+                        <div className="flex flex-col gap-1">
+                          {student.father_mobile && isValidWhatsAppNumber(student.father_mobile) && (
+                            <button
+                              onClick={() => sendWhatsAppReminder(student, student.father_mobile!, 'father')}
+                              className="text-green-600 hover:text-green-700 flex items-center gap-1 text-xs"
+                            >
+                              <Phone className="w-3 h-3" />
+                              Father
+                            </button>
+                          )}
+                          {student.mother_mobile && isValidWhatsAppNumber(student.mother_mobile) && (
+                            <button
+                              onClick={() => sendWhatsAppReminder(student, student.mother_mobile!, 'mother')}
+                              className="text-green-600 hover:text-green-700 flex items-center gap-1 text-xs"
+                            >
+                              <Phone className="w-3 h-3" />
+                              Mother
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>

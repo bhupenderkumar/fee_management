@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
 
     // Get ALL students
     const { data: allStudents, error: studentsError } = await supabaseAdmin
+      .schema('school')
       .from('IDCard')
       .select(`
         id,

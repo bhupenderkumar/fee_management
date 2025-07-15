@@ -1,44 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users } from 'lucide-react'
-import FeeManagementForm from './FeeManagementForm'
-import FeeRecordsComponent from './FeeRecordsComponent'
-import PendingFeesComponent from './PendingFeesComponent'
-import AttendanceManagement from './AttendanceManagement'
-import DashboardAnalytics from './DashboardAnalytics'
-import BirthdayManagement from './BirthdayManagement'
-import StudentManagement from './StudentManagement'
-import LogoutButton, { SecurityIndicator } from './LogoutButton'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users, School } from 'lucide-react'
+import LogoutButton, { SecurityIndicator } from '@/components/LogoutButton'
 
-type TabType = 'dashboard' | 'attendance' | 'collection' | 'records' | 'pending' | 'birthdays' | 'students'
+interface DashboardLayoutProps {
+  children: React.ReactNode
+}
 
-export default function FeeManagementDashboard() {
-  const [activeTab, setActiveTab] = useState<TabType>('dashboard')
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname()
+  
+  // Extract current tab from pathname
+  const currentTab = pathname.split('/')[2] || 'dashboard'
 
   const tabs = [
-    { id: 'dashboard' as TabType, name: 'Dashboard', icon: BarChart3, description: 'Overview of attendance and fees' },
-    { id: 'attendance' as TabType, name: 'Attendance', icon: UserCheck, description: 'Mark and manage student attendance' },
-    { id: 'collection' as TabType, name: 'Fee Collection', icon: CreditCard, description: 'Record new fee payments' },
-    { id: 'records' as TabType, name: 'Fee Records', icon: FileText, description: 'View all fee submission records' },
-    { id: 'pending' as TabType, name: 'Pending Fees', icon: Clock, description: 'View students with pending fees' },
-    { id: 'birthdays' as TabType, name: 'Birthdays', icon: Cake, description: 'Celebrate student birthdays' },
-    { id: 'students' as TabType, name: 'Students', icon: Users, description: 'Manage all student records and information' },
+    { id: 'dashboard', name: 'Dashboard', icon: BarChart3, description: 'Overview of attendance and fees' },
+    { id: 'attendance', name: 'Attendance', icon: UserCheck, description: 'Mark and manage student attendance' },
+    { id: 'collection', name: 'Fee Collection', icon: CreditCard, description: 'Record new fee payments' },
+    { id: 'records', name: 'Fee Records', icon: FileText, description: 'View all fee submission records' },
+    { id: 'pending', name: 'Pending Fees', icon: Clock, description: 'View students with pending fees' },
+    { id: 'birthdays', name: 'Birthdays', icon: Cake, description: 'Celebrate student birthdays' },
+    { id: 'students', name: 'Students', icon: Users, description: 'Manage all student records and information' },
   ]
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'dashboard': return <DashboardAnalytics />
-      case 'attendance': return <AttendanceManagement />
-      case 'collection': return <FeeManagementForm />
-      case 'records': return <FeeRecordsComponent />
-      case 'pending': return <PendingFeesComponent />
-      case 'birthdays': return <BirthdayManagement />
-      case 'students': return <StudentManagement />
-      default: return <DashboardAnalytics />
-    }
-  }
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -59,18 +46,18 @@ export default function FeeManagementDashboard() {
                 </p>
               </div>
             </div>
-
+            
             {/* Right side - Security indicator and logout */}
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block">
                 <SecurityIndicator />
               </div>
-
+              
               <div className="flex items-center space-x-2">
                 <div className="hidden md:block">
                   <LogoutButton />
                 </div>
-
+                
                 {/* Mobile menu button */}
                 <div className="md:hidden">
                   <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-black hover:text-gray-600 transition-colors">
@@ -92,20 +79,26 @@ export default function FeeManagementDashboard() {
               <ul className="space-y-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon
-                  const isActive = activeTab === tab.id
+                  const isActive = currentTab === tab.id
                   return (
                     <li key={tab.id}>
-                      <button
-                        onClick={() => { setActiveTab(tab.id); setIsMenuOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? 'bg-black text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'}`}>
+                      <Link
+                        href={`/dashboard/${tab.id}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                          isActive 
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm' 
+                            : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
+                        }`}
+                      >
                         <Icon className="w-5 h-5" />
                         <span className="font-medium text-sm">{tab.name}</span>
-                      </button>
+                      </Link>
                     </li>
                   )
                 })}
               </ul>
-
+              
               {/* Mobile logout button and security indicator */}
               <div className="md:hidden mt-6 pt-4 border-t border-gray-200 px-4 space-y-3">
                 <SecurityIndicator />
@@ -117,21 +110,19 @@ export default function FeeManagementDashboard() {
           {/* Main Content */}
           <main className="flex-1">
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm min-h-[calc(100vh-8rem)]">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-black">
-                  {tabs.find(tab => tab.id === activeTab)?.name}
-                </h2>
-                <p className="mt-1 text-sm text-gray-600">
-                  {tabs.find(tab => tab.id === activeTab)?.description}
-                </p>
-              </div>
-              <div className="p-6">
-                {renderTabContent()}
-              </div>
+              {children}
             </div>
           </main>
         </div>
       </div>
+
+      {/* Mobile menu overlay */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
     </div>
   )
 }

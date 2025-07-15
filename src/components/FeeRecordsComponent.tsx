@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Search, Filter, Download, Eye, ChevronLeft, ChevronRight, Edit, Save, X, History } from 'lucide-react'
+import { Search, Filter, Download, Eye, ChevronLeft, ChevronRight, Edit, Save, X, History, Trash2 } from 'lucide-react'
 import { FeePayment, FeeHistoryUpdate } from '@/types/database'
-import { updateFeePayment } from '@/lib/database'
+import { updateFeePayment, deleteFeePayment } from '@/lib/database'
 
 interface FeeRecordsFilters {
   studentName: string
@@ -18,6 +18,7 @@ interface FeeRecordsFilters {
 export default function FeeRecordsComponent() {
   const [payments, setPayments] = useState<FeePayment[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showFilters, setShowFilters] = useState(false)
@@ -25,7 +26,12 @@ export default function FeeRecordsComponent() {
   const [editForm, setEditForm] = useState<Partial<FeePayment>>({})
   const [showHistory, setShowHistory] = useState<string | null>(null)
   const [historyData, setHistoryData] = useState<FeeHistoryUpdate[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
   const [updateReason, setUpdateReason] = useState('')
+  const [updating, setUpdating] = useState(false)
+  const [deletingPayment, setDeletingPayment] = useState<string | null>(null)
+  const [deleteReason, setDeleteReason] = useState('')
+  const [deleting, setDeleting] = useState(false)
   const [filters, setFilters] = useState<FeeRecordsFilters>({
     studentName: '',
     className: '',
@@ -37,6 +43,7 @@ export default function FeeRecordsComponent() {
 
   const fetchPayments = async () => {
     setLoading(true)
+    setError(null)
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -53,12 +60,15 @@ export default function FeeRecordsComponent() {
 
       const response = await fetch(`/api/payments?${params}`)
       if (!response.ok) throw new Error('Failed to fetch payments')
-      
+
       const result = await response.json()
       setPayments(result.data)
       setTotalPages(result.pagination.totalPages)
     } catch (error) {
       console.error('Error fetching payments:', error)
+      setError('Failed to load payment records. Please try again.')
+      setPayments([])
+      setTotalPages(1)
     } finally {
       setLoading(false)
     }
@@ -114,11 +124,11 @@ export default function FeeRecordsComponent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-color-primary-100 text-color-primary-800'
+        return 'bg-black text-white'
       case 'partial':
-        return 'bg-color-neutral-100 text-color-neutral-800'
+        return 'bg-gray-600 text-white'
       case 'pending':
-        return 'bg-color-accent-100 text-color-accent-800'
+        return 'bg-gray-200 text-gray-700'
       default:
         return 'bg-gray-100 text-gray-800'
     }
@@ -154,6 +164,7 @@ export default function FeeRecordsComponent() {
       return
     }
 
+    setUpdating(true)
     try {
       await updateFeePayment(editingPayment, editForm, 'admin', updateReason)
       setEditingPayment(null)
@@ -163,6 +174,8 @@ export default function FeeRecordsComponent() {
     } catch (error) {
       console.error('Error updating payment:', error)
       alert('Failed to update payment record')
+    } finally {
+      setUpdating(false)
     }
   }
 
@@ -172,7 +185,45 @@ export default function FeeRecordsComponent() {
     setUpdateReason('')
   }
 
+  const handleDeleteClick = (payment: FeePayment) => {
+    setDeletingPayment(payment.id)
+    setDeleteReason('')
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!deletingPayment || !deleteReason.trim()) {
+      alert('Please provide a reason for deletion')
+      return
+    }
+
+    setDeleting(true)
+    try {
+      const result = await deleteFeePayment(deletingPayment, 'admin', deleteReason)
+      setDeletingPayment(null)
+      setDeleteReason('')
+
+      // Refresh the data and reset to first page if current page becomes empty
+      await fetchPayments()
+
+      // Show success message with deleted record info
+      const deletedStudent = result.deleted_record.student?.student_name || 'Unknown Student'
+      alert(`Payment record for ${deletedStudent} deleted successfully`)
+    } catch (error) {
+      console.error('Error deleting payment:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete payment record'
+      alert(`Error: ${errorMessage}`)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const handleCancelDelete = () => {
+    setDeletingPayment(null)
+    setDeleteReason('')
+  }
+
   const fetchHistory = async (paymentId: string) => {
+    setHistoryLoading(true)
     try {
       const response = await fetch(`/api/fee-history?fee_payment_id=${paymentId}`)
       if (!response.ok) throw new Error('Failed to fetch history')
@@ -182,6 +233,8 @@ export default function FeeRecordsComponent() {
     } catch (error) {
       console.error('Error fetching history:', error)
       alert('Failed to fetch payment history')
+    } finally {
+      setHistoryLoading(false)
     }
   }
 
@@ -190,20 +243,20 @@ export default function FeeRecordsComponent() {
       {/* Header with Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h3 className="text-lg font-medium text-gray-900">Fee Payment Records</h3>
-          <p className="text-sm text-gray-500">View and manage all fee payment submissions</p>
+          <h3 className="text-lg font-medium text-black">Fee Payment Records</h3>
+          <p className="text-sm text-gray-600">View and manage all fee payment submissions</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 border border-color-neutral-300 rounded-md hover:bg-color-neutral-50 text-color-neutral-700"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 text-gray-700"
           >
             <Filter className="w-4 h-4" />
             Filters
           </button>
           <button
             onClick={exportToCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-color-primary text-white rounded-md hover:bg-color-secondary"
+            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -216,31 +269,31 @@ export default function FeeRecordsComponent() {
         <div className="bg-gray-50 p-4 rounded-lg border">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
+              <label className="block text-sm font-medium text-black mb-1">Student Name</label>
               <input
                 type="text"
                 value={filters.studentName}
                 onChange={(e) => handleFilterChange('studentName', e.target.value)}
                 placeholder="Search by student name..."
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+              <label className="block text-sm font-medium text-black mb-1">Class</label>
               <input
                 type="text"
                 value={filters.className}
                 onChange={(e) => handleFilterChange('className', e.target.value)}
                 placeholder="Search by class..."
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+              <label className="block text-sm font-medium text-black mb-1">Payment Status</label>
               <select
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black bg-white"
               >
                 <option value="">All Statuses</option>
                 <option value="completed">Completed</option>
@@ -249,11 +302,11 @@ export default function FeeRecordsComponent() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+              <label className="block text-sm font-medium text-black mb-1">Payment Method</label>
               <select
                 value={filters.method}
                 onChange={(e) => handleFilterChange('method', e.target.value)}
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900 bg-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black bg-white"
               >
                 <option value="">All Methods</option>
                 <option value="cash">Cash</option>
@@ -264,28 +317,28 @@ export default function FeeRecordsComponent() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <label className="block text-sm font-medium text-black mb-1">Start Date</label>
               <input
                 type="date"
                 value={filters.startDate}
                 onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <label className="block text-sm font-medium text-black mb-1">End Date</label>
               <input
                 type="date"
                 value={filters.endDate}
                 onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                className="w-full px-3 py-2 border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-primary text-color-neutral-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-black"
               />
             </div>
           </div>
           <div className="mt-4 flex justify-end">
             <button
               onClick={clearFilters}
-              className="px-4 py-2 text-sm text-color-neutral-600 hover:text-color-neutral-800"
+              className="px-4 py-2 text-sm text-gray-600 hover:text-black"
             >
               Clear All Filters
             </button>
@@ -297,8 +350,21 @@ export default function FeeRecordsComponent() {
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-500">Loading fee records...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto"></div>
+            <p className="mt-2 text-gray-600">Loading fee records...</p>
+          </div>
+        ) : error ? (
+          <div className="p-8 text-center">
+            <div className="text-black mb-4">
+              <p className="font-medium">Error Loading Records</p>
+              <p className="text-sm text-gray-600 mt-1">{error}</p>
+            </div>
+            <button
+              onClick={fetchPayments}
+              className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
+            >
+              Try Again
+            </button>
           </div>
         ) : payments.length === 0 ? (
           <div className="p-8 text-center">
@@ -463,6 +529,13 @@ export default function FeeRecordsComponent() {
                               >
                                 <Eye className="w-4 h-4" />
                               </a>
+                              <button
+                                onClick={() => handleDeleteClick(payment)}
+                                className="text-red-600 hover:text-red-800"
+                                title="Delete record"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
                             </>
                           )}
                         </div>
@@ -545,10 +618,46 @@ export default function FeeRecordsComponent() {
               </button>
               <button
                 onClick={handleSaveEdit}
-                disabled={!updateReason.trim()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!updateReason.trim() || updating}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Save Changes
+                {updating && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
+                {updating ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deletingPayment && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Confirm Deletion</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to delete this payment record? This action cannot be undone.
+            </p>
+            <textarea
+              value={deleteReason}
+              onChange={(e) => setDeleteReason(e.target.value)}
+              placeholder="Please provide a reason for deletion..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+              rows={3}
+            />
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={!deleteReason.trim() || deleting}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {deleting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
+                {deleting ? 'Deleting...' : 'Delete Record'}
               </button>
             </div>
           </div>
@@ -569,7 +678,12 @@ export default function FeeRecordsComponent() {
               </button>
             </div>
 
-            {historyData.length === 0 ? (
+            {historyLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-2 text-gray-500">Loading history...</p>
+              </div>
+            ) : historyData.length === 0 ? (
               <p className="text-gray-500">No history records found.</p>
             ) : (
               <div className="space-y-4">

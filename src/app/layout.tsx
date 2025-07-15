@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import CacheStatus from "@/components/CacheStatus";
+import AuthWrapper from "@/components/AuthWrapper";
 
-const inter = Inter({ subsets: ["latin"] });
+// Using system fonts for better performance and reliability
 
 export const metadata: Metadata = {
   title: "First Step School - Management System",
@@ -16,8 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-br from-gray-900 to-blue-900`}>
-        {children}
+      <body className="font-apple bg-white">
+        <AuthWrapper>
+          {children}
+        </AuthWrapper>
+        <CacheStatus />
       </body>
     </html>
   );

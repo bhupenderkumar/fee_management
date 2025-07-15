@@ -1,9 +1,6 @@
-import FeeManagementDashboard from '@/components/FeeManagementDashboard'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <FeeManagementDashboard />
-    </div>
-  );
+  // Redirect to dashboard by default
+  redirect('/dashboard/dashboard')
 }

@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { data, error } = await supabase
+      .schema('school')
       .from('fee_history_update')
       .select('*')
       .eq('fee_payment_id', feePaymentId)

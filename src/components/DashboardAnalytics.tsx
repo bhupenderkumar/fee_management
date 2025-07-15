@@ -51,7 +51,7 @@ interface AttendanceTrend {
   attendancePercentage: number
 }
 
-const COLORS = ['#10B981', '#EF4444', '#F59E0B', '#3B82F6']
+const COLORS = ['#000000', '#404040', '#737373', '#A3A3A3']
 
 export default function DashboardAnalytics() {
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null)
@@ -153,12 +153,12 @@ export default function DashboardAnalytics() {
         {/* Total Students */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <Users className="w-6 h-6 text-black" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Students</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600">Total Students</p>
+              <p className="text-2xl font-bold text-black">
                 {attendanceStats?.totalStudents || 0}
               </p>
             </div>
@@ -168,15 +168,15 @@ export default function DashboardAnalytics() {
         {/* Present Today */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="w-6 h-6 text-green-600" />
+            <div className="p-2 bg-black rounded-lg">
+              <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Present Today</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600">Present Today</p>
+              <p className="text-2xl font-bold text-black">
                 {attendanceStats?.presentCount || 0}
               </p>
-              <p className="text-xs text-green-600">
+              <p className="text-xs text-gray-700">
                 {attendanceStats?.attendancePercentage.toFixed(1)}% attendance
               </p>
             </div>
@@ -186,12 +186,12 @@ export default function DashboardAnalytics() {
         {/* Absent Today */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <XCircle className="w-6 h-6 text-red-600" />
+            <div className="p-2 bg-gray-200 rounded-lg">
+              <XCircle className="w-6 h-6 text-gray-700" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Absent Today</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600">Absent Today</p>
+              <p className="text-2xl font-bold text-black">
                 {attendanceStats?.absentCount || 0}
               </p>
             </div>
@@ -201,15 +201,15 @@ export default function DashboardAnalytics() {
         {/* Fee Collection */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <DollarSign className="w-6 h-6 text-yellow-600" />
+            <div className="p-2 bg-gray-800 rounded-lg">
+              <DollarSign className="w-6 h-6 text-white" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Fees Collected</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600">Fees Collected</p>
+              <p className="text-2xl font-bold text-black">
                 ₹{feeStats?.totalCollected.toLocaleString() || 0}
               </p>
-              <p className="text-xs text-yellow-600">
+              <p className="text-xs text-gray-700">
                 ₹{feeStats?.totalPending.toLocaleString() || 0} pending
               </p>
             </div>
@@ -350,23 +350,23 @@ export default function DashboardAnalytics() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Attendance Summary */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Attendance Summary</h3>
+          <h3 className="text-lg font-semibold text-black mb-4">Attendance Summary</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Total Students</span>
-              <span className="font-semibold">{attendanceStats?.totalStudents || 0}</span>
+              <span className="font-semibold text-black">{attendanceStats?.totalStudents || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Present Today</span>
-              <span className="font-semibold text-green-600">{attendanceStats?.presentCount || 0}</span>
+              <span className="font-semibold text-black">{attendanceStats?.presentCount || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Absent Today</span>
-              <span className="font-semibold text-red-600">{attendanceStats?.absentCount || 0}</span>
+              <span className="font-semibold text-gray-700">{attendanceStats?.absentCount || 0}</span>
             </div>
             <div className="flex justify-between items-center pt-2 border-t">
               <span className="text-gray-600">Attendance Rate</span>
-              <span className="font-semibold text-blue-600">
+              <span className="font-semibold text-black">
                 {attendanceStats?.attendancePercentage.toFixed(1)}%
               </span>
             </div>
@@ -375,27 +375,27 @@ export default function DashboardAnalytics() {
 
         {/* Fee Summary */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Fee Collection Summary</h3>
+          <h3 className="text-lg font-semibold text-black mb-4">Fee Collection Summary</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Total Students</span>
-              <span className="font-semibold">{feeStats?.totalStudents || 0}</span>
+              <span className="font-semibold text-black">{feeStats?.totalStudents || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Fees Collected</span>
-              <span className="font-semibold text-green-600">
+              <span className="font-semibold text-black">
                 ₹{feeStats?.totalCollected.toLocaleString() || 0}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Pending Fees</span>
-              <span className="font-semibold text-yellow-600">
+              <span className="font-semibold text-gray-700">
                 ₹{feeStats?.totalPending.toLocaleString() || 0}
               </span>
             </div>
             <div className="flex justify-between items-center pt-2 border-t">
               <span className="text-gray-600">Students with Pending</span>
-              <span className="font-semibold text-red-600">
+              <span className="font-semibold text-gray-700">
                 {feeStats?.studentsWithPending || 0}
               </span>
             </div>
@@ -405,29 +405,29 @@ export default function DashboardAnalytics() {
 
       {/* Quick Actions */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-semibold text-black mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-            <Users className="w-6 h-6 text-blue-500 mb-2" />
-            <p className="font-medium text-gray-900">Mark Attendance</p>
+            <Users className="w-6 h-6 text-black mb-2" />
+            <p className="font-medium text-black">Mark Attendance</p>
             <p className="text-sm text-gray-600">Record today's attendance</p>
           </button>
 
           <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-            <DollarSign className="w-6 h-6 text-green-500 mb-2" />
-            <p className="font-medium text-gray-900">Collect Fees</p>
+            <DollarSign className="w-6 h-6 text-black mb-2" />
+            <p className="font-medium text-black">Collect Fees</p>
             <p className="text-sm text-gray-600">Record fee payments</p>
           </button>
 
           <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-            <BarChart3 className="w-6 h-6 text-purple-500 mb-2" />
-            <p className="font-medium text-gray-900">View Reports</p>
+            <BarChart3 className="w-6 h-6 text-black mb-2" />
+            <p className="font-medium text-black">View Reports</p>
             <p className="text-sm text-gray-600">Generate detailed reports</p>
           </button>
 
           <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
-            <Calendar className="w-6 h-6 text-orange-500 mb-2" />
-            <p className="font-medium text-gray-900">View Calendar</p>
+            <Calendar className="w-6 h-6 text-black mb-2" />
+            <p className="font-medium text-black">View Calendar</p>
             <p className="text-sm text-gray-600">Check school calendar</p>
           </button>
         </div>

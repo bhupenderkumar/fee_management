@@ -19,6 +19,17 @@ export interface Student {
   }
 }
 
+export interface BirthdayMessage {
+  id: string
+  student_id: string
+  message_content: string
+  sent_to: 'father' | 'mother' | 'both'
+  phone_number?: string
+  sent_at: string
+  created_at: string
+  student?: Student
+}
+
 export interface FeePayment {
   id: string
   student_id: string

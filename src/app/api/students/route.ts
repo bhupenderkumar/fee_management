@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { data, error } = await supabaseAdmin
+      .schema('school')
       .from('IDCard')
       .select('*')
       .eq('class_id', className)
