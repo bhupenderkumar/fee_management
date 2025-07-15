@@ -72,6 +72,6 @@ export async function testImageLoading(imageUrl: string): Promise<boolean> {
 // Run the test if this file is executed directly
 if (typeof window !== 'undefined') {
   // Browser environment - add to global scope for manual testing
-  (window as any).testImageUrlConversion = testImageUrlConversion
-  (window as any).testImageLoading = testImageLoading
+  ;(window as any).testImageUrlConversion = testImageUrlConversion
+  ;(window as any).testImageLoading = testImageLoading
 }

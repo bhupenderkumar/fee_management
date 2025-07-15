@@ -43,7 +43,7 @@ export function shareOnWhatsApp({ phoneNumber, message, fallbackDelay = 1000 }: 
       setTimeout(() => {
         window.open(whatsappUrl, '_blank')
       }, fallbackDelay)
-    } catch (error) {
+    } catch {
       // If app opening fails, go directly to web version
       window.open(whatsappUrl, '_blank')
     }

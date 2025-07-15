@@ -534,7 +534,7 @@ input:focus, textarea:focus {
 
 /* Override Tailwind's bg-black to use a beige color instead */
 .bg-black {
-  background-color: #ff920c !important; /* Dark beige/brown color */
+  background-color: #1d1c1a !important; /* Dark beige/brown color */
 }
 
 /* You can also override other black-related classes */

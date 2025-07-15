@@ -54,6 +54,7 @@ interface Student {
   transport_required?: boolean
   medical_conditions?: string
   fee_payments?: any[]
+  created_at?: string
   class?: {
     name: string
     section: string
@@ -420,7 +421,7 @@ export default function StudentManagement() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(student.created_at || '')}
+                    {formatDate(student.created_at || new Date().toISOString())}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {student.class_id} {student.section && `- ${student.section}`}

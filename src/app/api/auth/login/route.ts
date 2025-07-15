@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Verify the access key
     if (key !== ACCESS_KEY) {
       // Log failed attempt (in production, you might want to implement rate limiting)
-      console.log(`Failed login attempt at ${new Date().toISOString()} from IP: ${request.ip || 'unknown'}`)
+      console.log(`Failed login attempt at ${new Date().toISOString()} from IP: ${request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'}`)
 
       return NextResponse.json(
         { error: 'Invalid access key' },
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     )
 
     // Log successful login
-    console.log(`Successful login at ${new Date().toISOString()} from IP: ${request.ip || 'unknown'}`)
+    console.log(`Successful login at ${new Date().toISOString()} from IP: ${request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'}`)
 
     return NextResponse.json({
       success: true,

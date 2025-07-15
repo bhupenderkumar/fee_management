@@ -313,19 +313,19 @@ export async function getStudentsWithPendingFees(): Promise<any[]> {
       const studentPayments = paymentsByStudent.get(student.id) || []
 
       // Calculate totals from all payments
-      const totalPaid = studentPayments.reduce((sum: number, payment: any) =>
-        sum + (parseFloat(payment.amount_received) || 0), 0)
+      const totalPaid = studentPayments.reduce((sum: number, payment: FeePayment) =>
+        sum + (payment.amount_received || 0), 0)
 
-      const totalPending = studentPayments.reduce((sum: number, payment: any) =>
-        sum + (parseFloat(payment.balance_remaining) || 0), 0)
+      const totalPending = studentPayments.reduce((sum: number, payment: FeePayment) =>
+        sum + (payment.balance_remaining || 0), 0)
 
       // Get last payment
-      const lastPayment = studentPayments.sort((a: any, b: any) =>
+      const lastPayment = studentPayments.sort((a: FeePayment, b: FeePayment) =>
         new Date(b.payment_date).getTime() - new Date(a.payment_date).getTime()
       )[0]
 
       // Check if student has payment for current month using payment_date
-      const currentMonthPayment = studentPayments.find((payment: any) => {
+      const currentMonthPayment = studentPayments.find((payment: FeePayment) => {
         const paymentDate = new Date(payment.payment_date)
         return paymentDate.getMonth() + 1 === currentMonth &&
                paymentDate.getFullYear() === currentYear
@@ -547,7 +547,7 @@ export async function getAttendanceStatistics(date: string, classId?: string | n
 
     if (studentsError) throw studentsError
 
-    let attendanceQuery = supabaseAdmin
+    const attendanceQuery = supabaseAdmin
       .schema('school')
       .from('Attendance')
       .select('status, studentId')

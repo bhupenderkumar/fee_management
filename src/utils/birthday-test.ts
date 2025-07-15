@@ -57,5 +57,5 @@ export function testAgeCalculation() {
 // Run the test if this file is executed directly
 if (typeof window !== 'undefined') {
   // Browser environment - add to global scope for manual testing
-  (window as any).testAgeCalculation = testAgeCalculation
+  ;(window as any).testAgeCalculation = testAgeCalculation
 }
