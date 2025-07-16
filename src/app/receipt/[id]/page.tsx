@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { format } from 'date-fns'
+
 import { getFeePaymentByReceiptUrl } from '@/lib/database'
 import { FeePayment } from '@/types/database'
 import ReceiptComponent from '@/components/ReceiptComponent'
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: ReceiptPageProps) {
       title: `Fee Receipt - ${payment.student.student_name} | ${process.env.NEXT_PUBLIC_SCHOOL_NAME || 'First Step School'}`,
       description: `Fee payment receipt for ${payment.student.student_name} - Amount: ₹${payment.amount_received}`,
     }
-  } catch (error) {
+  } catch {
     return {
       title: 'Receipt Not Found',
     }

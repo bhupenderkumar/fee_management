@@ -106,7 +106,7 @@ export default function FeeManagementForm() {
     }
   }
 
-  const handleWhatsAppShare = (phoneNumber: string, parentType: 'father' | 'mother') => {
+  const handleWhatsAppShare = (phoneNumber: string, _parentType: 'father' | 'mother') => {
     if (receiptUrl && selectedStudent && isValidWhatsAppNumber(phoneNumber)) {
       const message = generateReceiptMessage({
         studentName: selectedStudent.student_name,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { 
   X, 
   User, 
@@ -12,7 +12,7 @@ import {
   Heart,
   AlertTriangle,
   CreditCard,
-  Clock,
+
   CheckCircle,
   XCircle,
   IndianRupee
@@ -43,7 +43,7 @@ interface Student {
   fees_amount?: number
   transport_required?: boolean
   medical_conditions?: string
-  fee_payments?: any[]
+  fee_payments?: { id: string; amount_received: number; payment_date: string; payment_method: string; payment_status: string; balance_remaining: number }[]
   class?: {
     name: string
     section: string

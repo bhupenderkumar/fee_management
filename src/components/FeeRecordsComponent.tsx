@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Search, Filter, Download, Eye, ChevronLeft, ChevronRight, Edit, Save, X, History, Trash2 } from 'lucide-react'
+import { Filter, Download, Eye, ChevronLeft, ChevronRight, Edit, Save, X, History, Trash2 } from 'lucide-react'
 import { FeePayment, FeeHistoryUpdate } from '@/types/database'
 import { updateFeePayment, deleteFeePayment } from '@/lib/database'
 
@@ -440,7 +440,7 @@ export default function FeeRecordsComponent() {
                         {editingPayment === payment.id ? (
                           <select
                             value={editForm.payment_method || ''}
-                            onChange={(e) => setEditForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, payment_method: e.target.value as 'cash' | 'card' | 'upi' | 'bank_transfer' | 'cheque' }))}
                             className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           >
                             <option value="cash">Cash</option>
@@ -457,7 +457,7 @@ export default function FeeRecordsComponent() {
                         {editingPayment === payment.id ? (
                           <select
                             value={editForm.payment_status || ''}
-                            onChange={(e) => setEditForm(prev => ({ ...prev, payment_status: e.target.value as any }))}
+                            onChange={(e) => setEditForm(prev => ({ ...prev, payment_status: e.target.value as 'completed' | 'partial' | 'pending' }))}
                             className="w-full px-2 py-1 border border-color-neutral-300 rounded text-color-neutral-900"
                           >
                             <option value="completed">Completed</option>

@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
     const { student_id, birthday_message, sent_to } = body
 
     // Log birthday message sent (optional - for tracking)
-    const { data, error } = await supabaseAdmin
+    const { error } = await supabaseAdmin
       .schema('school')
       .from('birthday_messages')
       .insert({

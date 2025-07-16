@@ -17,8 +17,7 @@ import {
   Line,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
+
   PieChart as RechartsPieChart,
   Pie,
   Cell,
@@ -51,7 +50,7 @@ interface AttendanceTrend {
   attendancePercentage: number
 }
 
-const COLORS = ['#000000', '#404040', '#737373', '#A3A3A3']
+
 
 export default function DashboardAnalytics() {
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null)
@@ -81,14 +80,14 @@ export default function DashboardAnalytics() {
       if (feeResponse.ok) {
         const feeData = await feeResponse.json()
         // Calculate fee statistics from the response
-        const totalCollected = feeData.reduce((sum: number, student: any) => sum + (student.totalPaid || 0), 0)
-        const totalPending = feeData.reduce((sum: number, student: any) => sum + (student.totalPending || 0), 0)
-        
+        const totalCollected = feeData.reduce((sum: number, student: { totalPaid?: number }) => sum + (student.totalPaid || 0), 0)
+        const totalPending = feeData.reduce((sum: number, student: { totalPending?: number }) => sum + (student.totalPending || 0), 0)
+
         setFeeStats({
           totalCollected,
           totalPending,
           totalStudents: feeData.length,
-          studentsWithPending: feeData.filter((student: any) => student.totalPending > 0).length
+          studentsWithPending: feeData.filter((student: { totalPending?: number }) => (student.totalPending || 0) > 0).length
         })
       }
 

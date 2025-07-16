@@ -1,6 +1,8 @@
 // Enhanced cache utility for storing classes, students data, and images
 // This will help reduce API calls and improve performance
 
+import { Student } from '@/types/database'
+
 interface CacheItem<T> {
   data: T
   timestamp: number
@@ -16,7 +18,7 @@ interface ImageCacheItem {
 }
 
 class DataCache {
-  private cache = new Map<string, CacheItem<any>>()
+  private cache = new Map<string, CacheItem<unknown>>()
   private imageCache = new Map<string, ImageCacheItem>()
   private readonly DEFAULT_EXPIRY = 5 * 60 * 1000 // 5 minutes in milliseconds
   private readonly IMAGE_EXPIRY = 30 * 60 * 1000 // 30 minutes for images
@@ -48,7 +50,7 @@ class DataCache {
 
   // Get data from cache if not expired
   get<T>(key: string): T | null {
-    let item = this.cache.get(key)
+    const item = this.cache.get(key)
 
     // If not in memory cache, try localStorage
     if (!item && typeof window !== 'undefined') {
@@ -246,39 +248,39 @@ export const cacheUtils = {
   },
 
   // Cache students by class
-  setStudentsByClass: (className: string, students: any[]) => {
+  setStudentsByClass: (className: string, students: Student[]) => {
     dataCache.set(CACHE_KEYS.STUDENTS_BY_CLASS(className), students, CACHE_EXPIRY.MEDIUM)
   },
 
-  getStudentsByClass: (className: string): any[] | null => {
-    return dataCache.get<any[]>(CACHE_KEYS.STUDENTS_BY_CLASS(className))
+  getStudentsByClass: (className: string): Student[] | null => {
+    return dataCache.get<Student[]>(CACHE_KEYS.STUDENTS_BY_CLASS(className))
   },
 
   // Cache individual student
-  setStudent: (id: string, student: any) => {
+  setStudent: (id: string, student: Student) => {
     dataCache.set(CACHE_KEYS.STUDENT_BY_ID(id), student, CACHE_EXPIRY.MEDIUM)
   },
 
-  getStudent: (id: string): any | null => {
-    return dataCache.get<any>(CACHE_KEYS.STUDENT_BY_ID(id))
+  getStudent: (id: string): Student | null => {
+    return dataCache.get<Student>(CACHE_KEYS.STUDENT_BY_ID(id))
   },
 
   // Cache birthday students
-  setBirthdayStudents: (students: any[]) => {
+  setBirthdayStudents: (students: Student[]) => {
     dataCache.set(CACHE_KEYS.BIRTHDAY_STUDENTS, students, CACHE_EXPIRY.SHORT)
   },
 
-  getBirthdayStudents: (): any[] | null => {
-    return dataCache.get<any[]>(CACHE_KEYS.BIRTHDAY_STUDENTS)
+  getBirthdayStudents: (): Student[] | null => {
+    return dataCache.get<Student[]>(CACHE_KEYS.BIRTHDAY_STUDENTS)
   },
 
   // Cache pending fees
-  setPendingFees: (fees: any[]) => {
+  setPendingFees: (fees: (Student & { totalPaid: number; totalPending: number; lastPaymentDate?: string; lastPaymentAmount?: number; pendingMonth?: number; pendingYear?: number; pendingReason?: string })[]) => {
     dataCache.set(CACHE_KEYS.PENDING_FEES, fees, CACHE_EXPIRY.SHORT)
   },
 
-  getPendingFees: (): any[] | null => {
-    return dataCache.get<any[]>(CACHE_KEYS.PENDING_FEES)
+  getPendingFees: (): (Student & { totalPaid: number; totalPending: number; lastPaymentDate?: string; lastPaymentAmount?: number; pendingMonth?: number; pendingYear?: number; pendingReason?: string })[] | null => {
+    return dataCache.get<(Student & { totalPaid: number; totalPending: number; lastPaymentDate?: string; lastPaymentAmount?: number; pendingMonth?: number; pendingYear?: number; pendingReason?: string })[]>(CACHE_KEYS.PENDING_FEES)
   },
 
   // Clear all student-related cache when data changes

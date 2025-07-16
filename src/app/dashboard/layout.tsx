@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users, School } from 'lucide-react'
+import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users } from 'lucide-react'
 import LogoutButton, { SecurityIndicator } from '@/components/LogoutButton'
 
 interface DashboardLayoutProps {

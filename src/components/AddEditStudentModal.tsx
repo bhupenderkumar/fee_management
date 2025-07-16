@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, Save, User, Phone, Mail, MapPin, Calendar, GraduationCap, Heart } from 'lucide-react'
+import { X, Save, User, Phone, GraduationCap, Heart } from 'lucide-react'
 import { createStudent, updateStudent, getClassesWithNames, StudentFormData } from '@/lib/database'
 
 interface Student {
@@ -137,7 +137,7 @@ export default function AddEditStudentModal({ student, isOpen, onClose, onSave }
     setActiveTab('basic')
   }, [student, isOpen])
 
-  const handleInputChange = (field: keyof StudentFormData, value: any) => {
+  const handleInputChange = (field: keyof StudentFormData, value: string | number | File | boolean | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     // Clear error when user starts typing
     if (errors[field]) {

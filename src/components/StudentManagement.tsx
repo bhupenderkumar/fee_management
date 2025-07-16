@@ -14,8 +14,7 @@ import {
   GraduationCap,
   Phone,
   Mail,
-  Calendar,
-  MapPin,
+
   User
 } from 'lucide-react'
 import { 
@@ -23,7 +22,7 @@ import {
   getClassesWithNames, 
   deleteStudent,
   StudentManagementParams,
-  StudentFormData 
+
 } from '@/lib/database'
 import StudentDetailModal from './StudentDetailModal'
 import AddEditStudentModal from './AddEditStudentModal'
@@ -53,7 +52,7 @@ interface Student {
   fees_amount?: number
   transport_required?: boolean
   medical_conditions?: string
-  fee_payments?: any[]
+  fee_payments?: { id: string; amount_received: number; payment_date: string; payment_method: string; payment_status: string; balance_remaining: number }[]
   created_at?: string
   class?: {
     name: string

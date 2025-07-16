@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { FeePayment } from '@/types/database'
 
 export async function GET(request: NextRequest) {
   try {
@@ -69,18 +70,18 @@ export async function GET(request: NextRequest) {
         const studentPayments = paymentsByStudent.get(student.id) || []
         
         // Get payment for this specific month using payment_date
-        const monthPayment = studentPayments.find((payment: any) => {
+        const monthPayment = studentPayments.find((payment: FeePayment) => {
           const paymentDate = new Date(payment.payment_date)
           return paymentDate.getMonth() + 1 === month &&
                  paymentDate.getFullYear() === year
         })
 
         // Calculate totals
-        const totalPaid = studentPayments.reduce((sum: number, payment: any) =>
-          sum + (parseFloat(payment.amount_received) || 0), 0)
+        const totalPaid = studentPayments.reduce((sum: number, payment: FeePayment) =>
+          sum + (parseFloat(payment.amount_received.toString()) || 0), 0)
 
         // Get last payment
-        const lastPayment = studentPayments.sort((a: any, b: any) =>
+        const lastPayment = studentPayments.sort((a: FeePayment, b: FeePayment) =>
           new Date(b.payment_date).getTime() - new Date(a.payment_date).getTime()
         )[0]
 

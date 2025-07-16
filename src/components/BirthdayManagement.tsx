@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { format, isToday, isThisWeek, isThisMonth, differenceInYears } from 'date-fns'
+import { format } from 'date-fns'
 import { Calendar, Gift, Share2, Download, Users, Cake, Heart, User } from 'lucide-react'
 import { Student } from '@/types/database'
 import { shareOnWhatsApp, generateBirthdayMessage, formatPhoneNumber, isValidWhatsAppNumber } from '@/utils/whatsapp'

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     try {
       // Verify the JWT token
-      const decoded = verify(token, SECRET_KEY) as any
+      const decoded = verify(token, SECRET_KEY) as { [key: string]: unknown }
       
       return NextResponse.json({
         valid: true,
@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
         message: 'Token is valid'
       })
 
-    } catch (jwtError) {
+    } catch {
       return NextResponse.json(
-        { 
+        {
           valid: false,
-          error: 'Invalid or expired token' 
+          error: 'Invalid or expired token'
         },
         { status: 401 }
       )

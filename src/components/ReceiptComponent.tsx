@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns'
 import { FeePayment } from '@/types/database'
-import { Printer, Download, Share2 } from 'lucide-react'
+import { Printer, Share2 } from 'lucide-react'
 import { shareOnWhatsApp, generateReceiptMessage, formatPhoneNumber, isValidWhatsAppNumber } from '@/utils/whatsapp'
 
 interface ReceiptComponentProps {

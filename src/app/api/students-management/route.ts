@@ -117,11 +117,11 @@ export async function POST(request: NextRequest) {
       blood_group,
       emergency_contact,
       previous_school,
-      admission_date,
+      admission_date: _admission_date,
       fees_amount,
       transport_required,
       medical_conditions,
-      created_by = 'admin'
+      created_by: _created_by = 'admin'
     } = body
 
     // Validate required fields
@@ -206,12 +206,12 @@ export async function PUT(request: NextRequest) {
       blood_group,
       emergency_contact,
       previous_school,
-      admission_date,
+      admission_date: _admission_date,
       fees_amount,
       transport_required,
       medical_conditions,
-      updated_by = 'admin',
-      update_reason
+      updated_by: _updated_by = 'admin',
+      update_reason: _update_reason
     } = body
 
     if (!id) {
@@ -292,7 +292,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    const deleted_by = searchParams.get('deleted_by') || 'admin'
+    const _deleted_by = searchParams.get('deleted_by') || 'admin'
     const delete_reason = searchParams.get('delete_reason')
 
     if (!id) {

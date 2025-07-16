@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { AlertCircle, CreditCard, Search, Filter, Phone, Calendar } from 'lucide-react'
-import { FeePayment, Student } from '@/types/database'
+import { AlertCircle, CreditCard, Search, Phone, Calendar } from 'lucide-react'
+import { Student } from '@/types/database'
 import { shareOnWhatsApp, generateReminderMessage, formatPhoneNumber, isValidWhatsAppNumber } from '@/utils/whatsapp'
 import { EnhancedImage } from './ChildDetailsComponent'
 

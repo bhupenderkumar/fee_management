@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Calendar, Users, MessageSquare, CheckCircle, XCircle, Save, Send, Filter, Search, RotateCcw, UserCheck, UserX } from 'lucide-react'
+import { Calendar, Users, MessageSquare, CheckCircle, XCircle, Save, Send, Search, RotateCcw, UserCheck } from 'lucide-react'
 import DatePicker from 'react-datepicker'
 import { Student, Attendance } from '@/types/database'
 import { EnhancedImage } from './ChildDetailsComponent'
@@ -40,7 +40,7 @@ export default function AttendanceManagement() {
   const [selectedClass, setSelectedClass] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [attendanceFilter, setAttendanceFilter] = useState<'all' | 'PRESENT' | 'ABSENT' | 'unmarked'>('all')
-  const [bulkAction, setBulkAction] = useState<'PRESENT' | 'ABSENT' | null>(null)
+
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set())
 
   // Load classes on component mount
@@ -368,7 +368,7 @@ export default function AttendanceManagement() {
                 <label className="block text-sm font-medium text-black mb-1">Filter by Status</label>
                 <select
                   value={attendanceFilter}
-                  onChange={(e) => setAttendanceFilter(e.target.value as any)}
+                  onChange={(e) => setAttendanceFilter(e.target.value as 'all' | 'PRESENT' | 'ABSENT' | 'unmarked')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                 >
                   <option value="all">All Students</option>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getStudentsWithPendingFees, getPaymentSummary } from '@/lib/database'
 import { supabase } from '@/lib/supabase'
+import { FeePayment } from '@/types/database'
 
 export async function GET(request: NextRequest) {
   try {
@@ -81,7 +82,7 @@ async function getStudentsWithPendingFeesForMonth(month: number, year: number) {
       const studentPayments = paymentsByStudent.get(student.id) || []
 
       // Get payment for this specific month using payment_date
-      const monthPayment = studentPayments.find((payment: any) => {
+      const monthPayment = studentPayments.find((payment: FeePayment) => {
         const paymentDate = new Date(payment.payment_date)
         return paymentDate.getMonth() + 1 === month &&
                paymentDate.getFullYear() === year

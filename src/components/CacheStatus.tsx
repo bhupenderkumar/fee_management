@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { dataCache, cacheUtils } from '@/lib/cache'
-import { Database, Trash2, RefreshCw, RotateCcw, Users, GraduationCap, Image } from 'lucide-react'
+import { Database, Trash2, RefreshCw, RotateCcw, Users, GraduationCap } from 'lucide-react'
 
 export default function CacheStatus() {
   const [cacheStats, setCacheStats] = useState({ dataCache: 0, imageCache: 0, totalSize: 0 })

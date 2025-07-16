@@ -1,6 +1,6 @@
-import { supabase, supabaseAdmin } from './supabase'
+import { supabaseAdmin } from './supabase'
 import { Student, FeePayment, Attendance, AttendanceMessage } from '@/types/database'
-import { cacheUtils, CACHE_KEYS, CACHE_EXPIRY } from './cache'
+import { cacheUtils } from './cache'
 
 // Get class information with names
 export async function getClassesWithNames(): Promise<{id: string, name: string, section: string}[]> {
@@ -257,7 +257,7 @@ export async function getAllFeePayments(): Promise<FeePayment[]> {
   return data || []
 }
 
-export async function getStudentsWithPendingFees(): Promise<any[]> {
+export async function getStudentsWithPendingFees(): Promise<(Student & { totalPaid: number; totalPending: number; lastPaymentDate?: string; lastPaymentAmount?: number; pendingMonth?: number; pendingYear?: number; pendingReason?: string })[]> {
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
 
