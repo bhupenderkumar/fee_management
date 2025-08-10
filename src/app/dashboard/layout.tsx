@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users } from 'lucide-react'
+import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users, PlusCircle } from 'lucide-react'
 import LogoutButton, { SecurityIndicator } from '@/components/LogoutButton'
 
 interface DashboardLayoutProps {
@@ -21,6 +21,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3, description: 'Overview of attendance and fees' },
     { id: 'attendance', name: 'Attendance', icon: UserCheck, description: 'Mark and manage student attendance' },
     { id: 'collection', name: 'Fee Collection', icon: CreditCard, description: 'Record new fee payments' },
+    { id: 'bulk-entry', name: 'Bulk Fee Entry', icon: PlusCircle, description: 'Enter multiple fee payments quickly' },
     { id: 'records', name: 'Fee Records', icon: FileText, description: 'View all fee submission records' },
     { id: 'pending', name: 'Pending Fees', icon: Clock, description: 'View students with pending fees' },
     { id: 'birthdays', name: 'Birthdays', icon: Cake, description: 'Celebrate student birthdays' },

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { AlertCircle, CreditCard, Search, Phone, Calendar } from 'lucide-react'
 import { Student } from '@/types/database'
-import { shareOnWhatsApp, generateReminderMessage, formatPhoneNumber, isValidWhatsAppNumber } from '@/utils/whatsapp'
+import { shareOnWhatsApp, generateReminderMessage, formatPhoneNumber, isValidWhatsAppNumber, isWhatsAppTabOpen } from '@/utils/whatsapp'
 import { EnhancedImage } from './ChildDetailsComponent'
 
 interface PendingFeeStudent extends Student {
@@ -83,7 +83,12 @@ export default function PendingFeesComponent() {
   }
 
   const sendWhatsAppReminder = (student: PendingFeeStudent, phoneNumber: string, parentType: 'father' | 'mother') => {
-    if (isValidWhatsAppNumber(phoneNumber)) {
+    if (!isValidWhatsAppNumber(phoneNumber)) {
+      alert(`Invalid ${parentType}'s phone number for WhatsApp sharing`)
+      return
+    }
+
+    try {
       const message = generateReminderMessage({
         studentName: student.student_name,
         className: student.class?.name,
@@ -93,12 +98,24 @@ export default function PendingFeesComponent() {
         lastPaymentDate: student.lastPaymentDate ? format(new Date(student.lastPaymentDate), 'dd/MM/yyyy') : undefined
       })
 
+      // Check if WhatsApp is already open
+      const wasAlreadyOpen = isWhatsAppTabOpen()
+
       shareOnWhatsApp({
         phoneNumber,
         message
       })
-    } else {
-      alert('Invalid phone number for WhatsApp sharing')
+
+      // Provide user feedback
+      const parentName = parentType === 'father' ? student.father_name : student.mother_name
+      const feedbackMessage = wasAlreadyOpen
+        ? `Fee reminder sent to ${parentName} (${parentType}) - message loaded in existing WhatsApp tab`
+        : `Fee reminder sent to ${parentName} (${parentType}) - WhatsApp opened in new tab`
+
+      console.log(feedbackMessage)
+    } catch (error) {
+      console.error('Error sending WhatsApp reminder:', error)
+      alert(`Failed to send WhatsApp reminder to ${parentType}. Please try again.`)
     }
   }
 

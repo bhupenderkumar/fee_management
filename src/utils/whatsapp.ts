@@ -8,26 +8,30 @@ export interface WhatsAppShareOptions {
   fallbackDelay?: number
 }
 
+// Global variable to track WhatsApp tab
+let whatsappTab: Window | null = null
+
 /**
  * Opens WhatsApp with a pre-filled message
- * Tries WhatsApp Business first, then regular WhatsApp, then web version
+ * Reuses existing WhatsApp tab if available to avoid multiple sessions
  */
 export function shareOnWhatsApp({ phoneNumber, message, fallbackDelay = 1000 }: WhatsAppShareOptions): void {
   // Clean phone number (remove any non-digit characters except +)
   const cleanNumber = phoneNumber.replace(/[^\d+]/g, '')
-  
+
   if (!cleanNumber) {
     console.error('Invalid phone number provided for WhatsApp sharing')
+    alert('Invalid phone number provided for WhatsApp sharing')
     return
   }
 
   // URLs for different WhatsApp clients
   const whatsappBusinessUrl = `whatsapp://send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`
   const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`
-  
+
   // Check if we're on mobile or desktop
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  
+
   if (isMobile) {
     // On mobile, try to open the app directly
     try {
@@ -38,19 +42,89 @@ export function shareOnWhatsApp({ phoneNumber, message, fallbackDelay = 1000 }: 
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      
+
       // Fallback to web version after delay if app doesn't open
       setTimeout(() => {
-        window.open(whatsappUrl, '_blank')
+        openWhatsAppTab(whatsappUrl)
       }, fallbackDelay)
     } catch {
       // If app opening fails, go directly to web version
-      window.open(whatsappUrl, '_blank')
+      openWhatsAppTab(whatsappUrl)
     }
   } else {
-    // On desktop, open web version directly
-    window.open(whatsappUrl, '_blank')
+    // On desktop, open web version with tab reuse
+    openWhatsAppTab(whatsappUrl)
   }
+}
+
+/**
+ * Opens WhatsApp in a tab, reusing existing tab if available
+ */
+function openWhatsAppTab(url: string): void {
+  try {
+    // Check if existing WhatsApp tab is still open and valid
+    if (whatsappTab && !whatsappTab.closed) {
+      // Focus the existing tab and navigate to new URL
+      whatsappTab.focus()
+      whatsappTab.location.href = url
+
+      // Show user feedback that we're reusing the existing tab
+      showWhatsAppFeedback('WhatsApp message loaded in existing tab')
+    } else {
+      // Open new tab and store reference
+      whatsappTab = window.open(url, 'whatsapp_tab')
+
+      // If popup was blocked, try opening in same tab
+      if (!whatsappTab) {
+        showWhatsAppFeedback('Please allow popups for WhatsApp sharing', 'warning')
+        window.location.href = url
+      } else {
+        showWhatsAppFeedback('WhatsApp opened in new tab')
+      }
+    }
+  } catch (error) {
+    console.error('Error opening WhatsApp tab:', error)
+    // Fallback: try to open in new tab without reuse
+    try {
+      window.open(url, '_blank')
+      showWhatsAppFeedback('WhatsApp opened in new tab')
+    } catch {
+      // Last resort: navigate in current tab
+      showWhatsAppFeedback('Redirecting to WhatsApp...', 'warning')
+      window.location.href = url
+    }
+  }
+}
+
+/**
+ * Shows user feedback for WhatsApp actions
+ */
+function showWhatsAppFeedback(message: string, type: 'success' | 'warning' = 'success'): void {
+  // Create a temporary notification
+  const notification = document.createElement('div')
+  notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-white text-sm font-medium transition-all duration-300 ${
+    type === 'success' ? 'bg-green-500' : 'bg-amber-500'
+  }`
+  notification.textContent = message
+
+  document.body.appendChild(notification)
+
+  // Remove notification after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = '0'
+    setTimeout(() => {
+      if (notification.parentNode) {
+        document.body.removeChild(notification)
+      }
+    }, 300)
+  }, 3000)
+}
+
+/**
+ * Checks if WhatsApp tab is currently open
+ */
+export function isWhatsAppTabOpen(): boolean {
+  return whatsappTab !== null && !whatsappTab.closed
 }
 
 /**

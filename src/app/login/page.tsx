@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock, School, Eye, EyeOff } from 'lucide-react'
 
@@ -9,7 +9,20 @@ export default function LoginPage() {
   const [showKey, setShowKey] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const router = useRouter()
+
+  // Load saved credentials on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedKey = localStorage.getItem('saved_access_key')
+      const savedRememberMe = localStorage.getItem('remember_me') === 'true'
+      if (savedKey && savedRememberMe) {
+        setKey(savedKey)
+        setRememberMe(true)
+      }
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,6 +44,15 @@ export default function LoginPage() {
         // Store authentication state in session storage
         sessionStorage.setItem('auth_token', data.token)
         sessionStorage.setItem('auth_timestamp', Date.now().toString())
+
+        // Handle remember me functionality
+        if (rememberMe) {
+          localStorage.setItem('saved_access_key', key)
+          localStorage.setItem('remember_me', 'true')
+        } else {
+          localStorage.removeItem('saved_access_key')
+          localStorage.removeItem('remember_me')
+        }
 
         // Redirect to return URL or main dashboard
         const urlParams = new URLSearchParams(window.location.search)
@@ -94,6 +116,21 @@ export default function LoginPage() {
                   {showKey ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+            </div>
+
+            {/* Remember Me Checkbox */}
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                disabled={isLoading}
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                Remember my access key
+              </label>
             </div>
 
             {error && (

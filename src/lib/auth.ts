@@ -47,9 +47,18 @@ export function getAuthState(): AuthState {
 // Clear authentication data
 export function clearAuth(): void {
   if (typeof window === 'undefined') return
-  
+
   sessionStorage.removeItem('auth_token')
   sessionStorage.removeItem('auth_timestamp')
+  // Note: We don't clear localStorage here to preserve "Remember Me" functionality
+}
+
+// Clear saved credentials (for "Remember Me" functionality)
+export function clearSavedCredentials(): void {
+  if (typeof window === 'undefined') return
+
+  localStorage.removeItem('saved_access_key')
+  localStorage.removeItem('remember_me')
 }
 
 // Logout function
