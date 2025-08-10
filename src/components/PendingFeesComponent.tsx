@@ -344,7 +344,8 @@ export default function PendingFeesComponent() {
                           {student.father_mobile && isValidWhatsAppNumber(student.father_mobile) && (
                             <button
                               onClick={() => sendWhatsAppReminder(student, student.father_mobile!, 'father')}
-                              className="text-green-600 hover:text-green-700 flex items-center gap-1 text-xs"
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50 flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors"
+                              title={`Send fee reminder to ${student.father_name} (Father) - ${formatPhoneNumber(student.father_mobile!)}`}
                             >
                               <Phone className="w-3 h-3" />
                               Father
@@ -353,11 +354,16 @@ export default function PendingFeesComponent() {
                           {student.mother_mobile && isValidWhatsAppNumber(student.mother_mobile) && (
                             <button
                               onClick={() => sendWhatsAppReminder(student, student.mother_mobile!, 'mother')}
-                              className="text-green-600 hover:text-green-700 flex items-center gap-1 text-xs"
+                              className="text-green-600 hover:text-green-700 hover:bg-green-50 flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors"
+                              title={`Send fee reminder to ${student.mother_name} (Mother) - ${formatPhoneNumber(student.mother_mobile!)}`}
                             >
                               <Phone className="w-3 h-3" />
                               Mother
                             </button>
+                          )}
+                          {(!student.father_mobile || !isValidWhatsAppNumber(student.father_mobile)) &&
+                           (!student.mother_mobile || !isValidWhatsAppNumber(student.mother_mobile)) && (
+                            <span className="text-gray-400 text-xs italic">No valid WhatsApp numbers</span>
                           )}
                         </div>
                       </div>
