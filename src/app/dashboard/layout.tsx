@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-3">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-amber-200">
                 FS
               </div>
               <div>
@@ -87,9 +87,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                         href={`/dashboard/${tab.id}`}
                         onClick={() => setIsMenuOpen(false)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                          isActive 
-                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm' 
-                            : 'text-gray-700 hover:bg-amber-50 hover:text-amber-700'
+                          isActive
+                            ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md border border-amber-300'
+                            : 'text-amber-800 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 hover:text-amber-900 hover:shadow-sm'
                         }`}
                       >
                         <Icon className="w-5 h-5" />
@@ -110,7 +110,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Main Content */}
           <main className="flex-1">
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm min-h-[calc(100vh-8rem)]">
+            <div className="bg-white border border-amber-200 rounded-xl shadow-lg min-h-[calc(100vh-8rem)] overflow-hidden">
               {children}
             </div>
           </main>

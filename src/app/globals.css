@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  /* Beige Color Scheme - Warm and Natural */
-  --color-primary: #8B7355; /* Dark Beige */
-  --color-primary-50: #FEFCF9; /* Very Light Beige */
-  --color-primary-100: #FDF8F1; /* Light Beige */
-  --color-primary-200: #FAF0E1; /* Light Beige */
-  --color-primary-300: #F7E8D1; /* Medium Light Beige */
-  --color-primary-400: #F4E0C1; /* Medium Beige */
-  --color-primary-500: #F1D8B1; /* Main Beige */
-  --color-primary-600: #E8C794; /* Medium Dark Beige */
-  --color-primary-700: #DFB677; /* Dark Beige */
-  --color-primary-800: #8B7355; /* Very Dark Beige */
-  --color-primary-900: #5D4E37; /* Darkest Brown */
-  --color-secondary: #B49B73; /* Warm Brown */
-  --color-accent: #8B7355; /* Dark Beige */
+  /* Enhanced Beige Color Scheme - Modern and Warm */
+  --color-primary: #D97706; /* Vibrant amber-600 for better contrast */
+  --color-primary-50: #FFFBEB; /* amber-50 - Very Light */
+  --color-primary-100: #FEF3C7; /* amber-100 - Light */
+  --color-primary-200: #FDE68A; /* amber-200 - Light */
+  --color-primary-300: #FCD34D; /* amber-300 - Medium Light */
+  --color-primary-400: #FBBF24; /* amber-400 - Medium */
+  --color-primary-500: #F59E0B; /* amber-500 - Main */
+  --color-primary-600: #D97706; /* amber-600 - Primary */
+  --color-primary-700: #B45309; /* amber-700 - Dark */
+  --color-primary-800: #92400E; /* amber-800 - Very Dark */
+  --color-primary-900: #78350F; /* amber-900 - Darkest */
+  --color-secondary: #F97316; /* orange-500 - Warm accent */
+  --color-accent: #EA580C; /* orange-600 - Strong accent */
   --color-neutral-50: #FEFCF9; /* Very Light Beige */
   --color-neutral-100: #FDF8F1; /* Light Beige */
   --color-neutral-200: #FAF0E1; /* Light Beige */
@@ -26,13 +26,24 @@
   --color-neutral-800: #6F5C44; /* Very Dark Beige */
   --color-neutral-900: #5D4E37; /* Darkest Brown */
 
-  --background: #FEFCF9; /* Very Light Beige Background */
-  --foreground: #5D4E37; /* Dark Brown Text */
-  --text-color: #5D4E37; /* Dark Brown Text */
-  --label-color: #8B7355; /* Dark Beige Labels */
-  --input-bg: #FFFFFF; /* White Input Background */
-  --input-border: #F7E8D1; /* Light Beige Border */
-  --input-text: #5D4E37; /* Dark Brown Input Text */
+  /* Enhanced background and text colors */
+  --background: #FFFBEB; /* amber-50 - Very Light Background */
+  --foreground: #78350F; /* amber-900 - Dark Text for better contrast */
+  --text-color: #78350F; /* amber-900 - Dark Text */
+  --label-color: #B45309; /* amber-700 - Medium Dark Labels */
+  --input-bg: #FFFFFF; /* Pure White Input Background */
+  --input-border: #FDE68A; /* amber-200 - Light Border */
+  --input-text: #78350F; /* amber-900 - Dark Input Text */
+
+  /* Additional modern colors */
+  --color-success: #059669; /* emerald-600 */
+  --color-success-light: #D1FAE5; /* emerald-100 */
+  --color-warning: #D97706; /* amber-600 */
+  --color-warning-light: #FEF3C7; /* amber-100 */
+  --color-error: #DC2626; /* red-600 */
+  --color-error-light: #FEE2E2; /* red-100 */
+  --color-info: #2563EB; /* blue-600 */
+  --color-info-light: #DBEAFE; /* blue-100 */
 }
 
 @theme inline {
