@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users } from 'lucide-react'
+import { CreditCard, FileText, Clock, BarChart3, UserCheck, Menu, X, Cake, Users, PlusCircle } from 'lucide-react'
 import FeeManagementForm from './FeeManagementForm'
 import FeeRecordsComponent from './FeeRecordsComponent'
 import PendingFeesComponent from './PendingFeesComponent'
@@ -9,9 +9,10 @@ import AttendanceManagement from './AttendanceManagement'
 import DashboardAnalytics from './DashboardAnalytics'
 import BirthdayManagement from './BirthdayManagement'
 import StudentManagement from './StudentManagement'
+import BulkFeeEntry from './BulkFeeEntry'
 import LogoutButton, { SecurityIndicator } from './LogoutButton'
 
-type TabType = 'dashboard' | 'attendance' | 'collection' | 'records' | 'pending' | 'birthdays' | 'students'
+type TabType = 'dashboard' | 'attendance' | 'collection' | 'bulk-entry' | 'records' | 'pending' | 'birthdays' | 'students'
 
 export default function FeeManagementDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard')
@@ -21,6 +22,7 @@ export default function FeeManagementDashboard() {
     { id: 'dashboard' as TabType, name: 'Dashboard', icon: BarChart3, description: 'Overview of attendance and fees' },
     { id: 'attendance' as TabType, name: 'Attendance', icon: UserCheck, description: 'Mark and manage student attendance' },
     { id: 'collection' as TabType, name: 'Fee Collection', icon: CreditCard, description: 'Record new fee payments' },
+    { id: 'bulk-entry' as TabType, name: 'Bulk Fee Entry', icon: PlusCircle, description: 'Enter multiple fee payments quickly' },
     { id: 'records' as TabType, name: 'Fee Records', icon: FileText, description: 'View all fee submission records' },
     { id: 'pending' as TabType, name: 'Pending Fees', icon: Clock, description: 'View students with pending fees' },
     { id: 'birthdays' as TabType, name: 'Birthdays', icon: Cake, description: 'Celebrate student birthdays' },
@@ -32,6 +34,7 @@ export default function FeeManagementDashboard() {
       case 'dashboard': return <DashboardAnalytics />
       case 'attendance': return <AttendanceManagement />
       case 'collection': return <FeeManagementForm />
+      case 'bulk-entry': return <BulkFeeEntry />
       case 'records': return <FeeRecordsComponent />
       case 'pending': return <PendingFeesComponent />
       case 'birthdays': return <BirthdayManagement />

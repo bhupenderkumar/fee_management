@@ -60,6 +60,54 @@ export interface FeeHistoryUpdate {
   created_at: string
 }
 
+// Bulk Fee Entry Types
+export interface BulkFeeEntry {
+  id?: string // Temporary ID for UI management
+  student_id: string
+  student_name?: string // For display purposes
+  class_name?: string // For display purposes
+  amount_received: number
+  payment_date: string
+  payment_method: 'cash' | 'card' | 'upi' | 'bank_transfer' | 'cheque'
+  balance_remaining: number
+  payment_status: 'completed' | 'partial' | 'pending'
+  notes?: string
+  fee_month?: number
+  fee_year?: number
+  // Validation state for UI
+  isValid?: boolean
+  validationErrors?: Record<string, string>
+}
+
+export interface BulkFeeEntryRequest {
+  entries: Omit<BulkFeeEntry, 'id' | 'student_name' | 'class_name' | 'isValid' | 'validationErrors'>[]
+}
+
+export interface BulkFeeEntryResponse {
+  success: boolean
+  created: FeePayment[]
+  errors?: Array<{
+    index: number
+    error: string
+    entry: BulkFeeEntry
+  }>
+  summary: {
+    totalEntries: number
+    successfulEntries: number
+    failedEntries: number
+    totalAmount: number
+  }
+}
+
+export interface BulkFeeEntrySummary {
+  totalEntries: number
+  totalAmount: number
+  validEntries: number
+  invalidEntries: number
+  paymentMethodBreakdown: Record<string, { count: number; amount: number }>
+  paymentStatusBreakdown: Record<string, { count: number; amount: number }>
+}
+
 export interface Attendance {
   id: string
   studentId: string  // Changed from student_id to match database schema

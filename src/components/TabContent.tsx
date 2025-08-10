@@ -7,6 +7,7 @@ import AttendanceManagement from './AttendanceManagement'
 import DashboardAnalytics from './DashboardAnalytics'
 import BirthdayManagement from './BirthdayManagement'
 import StudentManagement from './StudentManagement'
+import BulkFeeEntry from './BulkFeeEntry'
 
 interface TabContentProps {
   tab: string
@@ -21,6 +22,8 @@ export default function TabContent({ tab }: TabContentProps) {
         return <AttendanceManagement />
       case 'collection':
         return <FeeManagementForm />
+      case 'bulk-entry':
+        return <BulkFeeEntry />
       case 'records':
         return <FeeRecordsComponent />
       case 'pending':

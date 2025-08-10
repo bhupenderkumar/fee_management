@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 // Valid tab types
-const validTabs = ['dashboard', 'attendance', 'collection', 'records', 'pending', 'birthdays', 'students'] as const
+const validTabs = ['dashboard', 'attendance', 'collection', 'bulk-entry', 'records', 'pending', 'birthdays', 'students'] as const
 type TabType = typeof validTabs[number]
 
 // Tab configuration
@@ -16,6 +16,7 @@ const tabConfig = {
   dashboard: { name: 'Dashboard', description: 'Overview of attendance and fees' },
   attendance: { name: 'Attendance', description: 'Mark and manage student attendance' },
   collection: { name: 'Fee Collection', description: 'Record new fee payments' },
+  'bulk-entry': { name: 'Bulk Fee Entry', description: 'Enter multiple fee payments quickly' },
   records: { name: 'Fee Records', description: 'View all fee submission records' },
   pending: { name: 'Pending Fees', description: 'View students with pending fees' },
   birthdays: { name: 'Birthdays', description: 'Celebrate student birthdays' },

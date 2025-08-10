@@ -157,6 +157,96 @@ export async function createFeePayment(payment: Omit<FeePayment, 'id' | 'created
   }
 }
 
+// Bulk fee payment creation function
+export async function bulkCreateFeePayments(
+  payments: Omit<FeePayment, 'id' | 'created_at' | 'updated_at' | 'receipt_url' | 'has_updates'>[]
+): Promise<{
+  success: boolean
+  created: FeePayment[]
+  errors: Array<{ index: number; error: string; entry: any }>
+  summary: {
+    totalEntries: number
+    successfulEntries: number
+    failedEntries: number
+    totalAmount: number
+  }
+}> {
+  if (typeof window !== 'undefined') {
+    // Client-side: use API route
+    const response = await fetch('/api/payments/bulk', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ entries: payments }),
+    })
+    if (!response.ok) throw new Error('Failed to create bulk payments')
+    return response.json()
+  } else {
+    // Server-side: direct database access
+    const created: FeePayment[] = []
+    const errors: Array<{ index: number; error: string; entry: any }> = []
+    let totalAmount = 0
+
+    // Process each payment individually to handle partial failures
+    for (let i = 0; i < payments.length; i++) {
+      try {
+        const payment = payments[i]
+
+        // Extract month and year from payment_date
+        const paymentDate = new Date(payment.payment_date)
+        const fee_month = payment.fee_month || (paymentDate.getMonth() + 1)
+        const fee_year = payment.fee_year || paymentDate.getFullYear()
+
+        // Generate unique receipt URL
+        const receiptId = crypto.randomUUID()
+        const receiptUrl = `/receipt/${receiptId}`
+
+        const { data, error } = await supabaseAdmin
+          .schema('school')
+          .from('fee_payments')
+          .insert({
+            ...payment,
+            fee_month,
+            fee_year,
+            receipt_url: receiptUrl
+          })
+          .select('*')
+          .single()
+
+        if (error) {
+          errors.push({
+            index: i,
+            error: error.message || 'Failed to create payment',
+            entry: payment
+          })
+        } else {
+          created.push(data)
+          totalAmount += data.amount_received
+        }
+      } catch (error) {
+        errors.push({
+          index: i,
+          error: error instanceof Error ? error.message : 'Unknown error',
+          entry: payments[i]
+        })
+      }
+    }
+
+    return {
+      success: errors.length === 0,
+      created,
+      errors,
+      summary: {
+        totalEntries: payments.length,
+        successfulEntries: created.length,
+        failedEntries: errors.length,
+        totalAmount
+      }
+    }
+  }
+}
+
 export async function updateFeePayment(
   id: string,
   updates: Partial<FeePayment>,
